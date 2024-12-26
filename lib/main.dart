@@ -13,7 +13,7 @@ void main() async {
   await dependecy_injection.init();
   runApp(const MyApp());
 }
-
+// hihi
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
