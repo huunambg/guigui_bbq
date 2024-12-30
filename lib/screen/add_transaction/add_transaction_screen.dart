@@ -3,7 +3,10 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
+import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/table.dart';
+import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/screen/add_transaction/widget/item_menu.dart';
 import 'package:qlnh/screen/menu/menu_screen.dart';
 import 'package:qlnh/widget/body_background.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -18,6 +21,8 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   List<String> items = [];
   String? selectedValue;
+
+  final addTransactionCtl = Get.find<AddTransactionController>();
 
   @override
   void initState() {
@@ -45,6 +50,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           children: [
             Text(
               "Số lượng người",
+              style: GlobalTextStyles.font16w600ColorBlack,
+            ),
+            const Gap(8.0),
+            dropdownButtonSelectNumberPeole(),
+            const Gap(8.0),
+            Text(
+              "Loại Buffer",
               style: GlobalTextStyles.font16w600ColorBlack,
             ),
             const Gap(8.0),
@@ -99,65 +111,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        border: Border(bottom: BorderSide())),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text(
-                              "Cocacola",
-                              style: GlobalTextStyles.font16w600ColorBlack,
-                              textAlign: TextAlign.start,
-                            )),
-                        Expanded(
-                            child: Text(
-                          "10",
-                          style: GlobalTextStyles.font16w600ColorBlack,
-                          textAlign: TextAlign.center,
-                        )),
-                        Expanded(
-                            child: Text(
-                          "10K",
-                          style: GlobalTextStyles.font16w600ColorBlack,
-                          textAlign: TextAlign.center,
-                        ))
-                      ],
-                    ),
+                  ItemMenu(
+                    menu: Menu(itemName: "Cocacola", price: 10000),
+                    isShowMenu: true,
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        border: Border(bottom: BorderSide())),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text(
-                              "Lavie",
-                              style: GlobalTextStyles.font16w600ColorBlack,
-                              textAlign: TextAlign.start,
-                            )),
-                        Expanded(
-                            child: Text(
-                          "10",
-                          style: GlobalTextStyles.font16w600ColorBlack,
-                          textAlign: TextAlign.center,
-                        )),
-                        Expanded(
-                            child: Text(
-                          "10K",
-                          style: GlobalTextStyles.font16w600ColorBlack,
-                          textAlign: TextAlign.center,
-                        ))
-                      ],
-                    ),
+                  ItemMenu(
+                    menu: Menu(itemName: "Rượu vang đỏ", price: 200000),
+                    isShowMenu: false,
                   ),
                 ],
               ),

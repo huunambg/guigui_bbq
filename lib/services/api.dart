@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
 import '/model/acount.dart';
 
@@ -8,7 +9,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.43.4:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.20.72:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -100,6 +101,34 @@ class ApiService {
             )
             .toList();
         return listMenu;
+      } else {
+        throw "Tài khoản hoặc mật khẩu không chính xác!.";
+      }
+    } catch (e) {
+      print("Network error: $e");
+      throw "Lỗi kết nối tới máy chủ.";
+    }
+  }
+
+  Future<List<Buffer>> getAllBuffer() async {
+    final url = Uri.parse('$baseUrl/get-all-buffer');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllBuffer ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Buffer> listBuffer = listData
+            .map(
+              (e) => Buffer.fromJson(e),
+            )
+            .toList();
+        return listBuffer;
       } else {
         throw "Tài khoản hoặc mật khẩu không chính xác!.";
       }

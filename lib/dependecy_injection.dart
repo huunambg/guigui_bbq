@@ -1,4 +1,4 @@
-
+import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/splash/controller/splash_controller.dart';
 import '/util/preferences_util.dart';
 import 'package:get/get.dart';
@@ -11,5 +11,6 @@ Future<void> init() async {
   Get.lazyPut(() => loginController, fenix: true);
   final splashController = SplashController();
   Get.lazyPut(() => splashController, fenix: true);
-
+  final addTransactionController = AddTransactionController();
+  Get.lazyPut(() => addTransactionController, fenix: true);
 }

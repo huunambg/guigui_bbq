@@ -7,16 +7,21 @@ class Transaction {
   String? paymentDate;
   int? amount;
   String? listMenu;
+  int? countPeople; // Thuộc tính countPeople
+  int? bufferId;    // Thuộc tính bufferId
 
-  Transaction(
-      {this.transactionId,
-      this.orderId,
-      this.accountId,
-      this.tableId,
-      this.paymentMethod,
-      this.paymentDate,
-      this.amount,
-      this.listMenu});
+  Transaction({
+    this.transactionId,
+    this.orderId,
+    this.accountId,
+    this.tableId,
+    this.paymentMethod,
+    this.paymentDate,
+    this.amount,
+    this.listMenu,
+    this.countPeople,
+    this.bufferId, // Khởi tạo bufferId
+  });
 
   Transaction.fromJson(Map<String, dynamic> json) {
     transactionId = json['transaction_id'];
@@ -27,18 +32,48 @@ class Transaction {
     paymentDate = json['payment_date'];
     amount = json['amount'];
     listMenu = json['list_menu'];
+    countPeople = json['count_people'];
+    bufferId = json['buffer_id']; // Gán giá trị từ JSON
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['transaction_id'] = this.transactionId;
-    data['order_id'] = this.orderId;
-    data['account_id'] = this.accountId;
-    data['table_id'] = this.tableId;
-    data['payment_method'] = this.paymentMethod;
-    data['payment_date'] = this.paymentDate;
-    data['amount'] = this.amount;
-    data['list_menu'] = this.listMenu;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['transaction_id'] = transactionId;
+    data['order_id'] = orderId;
+    data['account_id'] = accountId;
+    data['table_id'] = tableId;
+    data['payment_method'] = paymentMethod;
+    data['payment_date'] = paymentDate;
+    data['amount'] = amount;
+    data['list_menu'] = listMenu;
+    data['count_people'] = countPeople;
+    data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
+  }
+
+  Transaction copyWith({
+    int? transactionId,
+    int? orderId,
+    int? accountId,
+    int? tableId,
+    String? paymentMethod,
+    String? paymentDate,
+    int? amount,
+    String? listMenu,
+    int? countPeople,
+    int? bufferId, // Bổ sung vào copyWith
+  }) {
+    return Transaction(
+      transactionId: transactionId ?? this.transactionId,
+      orderId: orderId ?? this.orderId,
+      accountId: accountId ?? this.accountId,
+      tableId: tableId ?? this.tableId,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentDate: paymentDate ?? this.paymentDate,
+      amount: amount ?? this.amount,
+      listMenu: listMenu ?? this.listMenu,
+      countPeople: countPeople ?? this.countPeople,
+      bufferId: bufferId ?? this.bufferId, // Sử dụng giá trị hiện tại nếu không thay đổi
+    );
   }
 }
