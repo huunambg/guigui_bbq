@@ -9,7 +9,7 @@ class Tablee {
   Tablee.fromJson(Map<String, dynamic> json) {
     tableId = json['table_id'];
     tableName = json['table_name'];
-    capacity = json['capacity'];
+    capacity = json['capacity'] as int;
     status = json['status'];
   }
 
