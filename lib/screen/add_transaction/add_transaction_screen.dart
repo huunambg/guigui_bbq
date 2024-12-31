@@ -3,7 +3,9 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
+import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
+import 'package:qlnh/model/orders.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/add_transaction/widget/item_menu.dart';
@@ -21,11 +23,12 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   List<String> items = [];
   String? selectedValue;
-
+  Buffer? selectedBuffer;
   final addTransactionCtl = Get.find<AddTransactionController>();
 
   @override
   void initState() {
+    addTransactionCtl.getListBuffer();
     super.initState();
     items = List.generate(
       widget.table.capacity!,
@@ -60,7 +63,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               style: GlobalTextStyles.font16w600ColorBlack,
             ),
             const Gap(8.0),
-            dropdownButtonSelectNumberPeole(),
+            dropdownButtonSelectBuffer(),
             const Gap(8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,7 +71,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 const Text("Đồ gọi thêm"),
                 ElevatedButton(
                     onPressed: () {
-                      Get.to(MenuScreen());
+                      Get.to(MenuScreen(order: Orders(),));
                     },
                     child: const Text("Thêm"))
               ],
@@ -187,6 +190,77 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         onChanged: (value) {
           setState(() {
             selectedValue = value;
+          });
+        },
+        buttonStyleData: ButtonStyleData(
+          height: 60,
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 14, right: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(),
+          ),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: 200,
+          width: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        menuItemStyleData: const MenuItemStyleData(
+          height: 40,
+          padding: EdgeInsets.only(left: 14, right: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget dropdownButtonSelectBuffer() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<Buffer>(
+        isExpanded: true,
+        hint: const Row(
+          children: [
+            Icon(
+              Icons.list,
+              size: 16,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Expanded(
+              child: Text(
+                'Chọn Buffer',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        items: addTransactionCtl.listBuffer
+            .map((Buffer item) => DropdownMenuItem<Buffer>(
+                  value: item,
+                  child: Text(
+                    "${item.bufferType}",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ))
+            .toList(),
+        value: selectedBuffer,
+        onChanged: (value) {
+          setState(() {
+            selectedBuffer = value;
           });
         },
         buttonStyleData: ButtonStyleData(

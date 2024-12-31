@@ -126,7 +126,7 @@ class GlobalTextStyles {
       fontFamily: fontFamily,
       fontWeight: FontWeight.w600,
       color: Colors.black);
-  static TextStyle font16w600ColorBlack = TextStyle(
+  static TextStyle font18w700ColorBlackfont16w600ColorBlack = TextStyle(
       fontSize: 16,
       fontFamily: fontFamily,
       fontWeight: FontWeight.w600,
@@ -224,7 +224,11 @@ class GlobalTextStyles {
     fontWeight: FontWeight.w600,
     color: Colors.white.withOpacity(0.38),
   );
-
+  static TextStyle font16w600ColorBlack= TextStyle(
+      fontSize: 16,
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.w600,
+      color: Colors.black);
   static TextStyle font12w600ColorWhite = TextStyle(
       fontSize: 12,
       fontFamily: fontFamily,
