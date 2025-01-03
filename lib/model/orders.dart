@@ -15,7 +15,6 @@ class Orders {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['order_id'] = this.orderId;
     data['order_date'] = this.orderDate;
     data['total_amount'] = this.totalAmount;
     data['status'] = this.status;

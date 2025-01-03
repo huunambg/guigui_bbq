@@ -25,12 +25,11 @@ class OrderDetail {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['order_detail_id'] = this.orderDetailId;
     data['order_id'] = this.orderId;
     data['menu_item_id'] = this.menuItemId;
     data['quantity'] = this.quantity;
     data['price'] = this.price;
-    data['total_price'] = this.totalPrice;
+   // data['total_price'] = this.totalPrice;
     return data;
   }
 

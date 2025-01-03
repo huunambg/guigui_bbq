@@ -35,7 +35,7 @@ class Transaction {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['transaction_id'] = transactionId;
+  //  data['transaction_id'] = transactionId;
     data['order_id'] = orderId;
     data['account_id'] = accountId;
     data['table_id'] = tableId;
@@ -55,7 +55,6 @@ class Transaction {
     String? paymentMethod,
     String? paymentDate,
     int? amount,
-    String? listMenu,
     int? countPeople,
     int? bufferId, // Bổ sung vào copyWith
   }) {

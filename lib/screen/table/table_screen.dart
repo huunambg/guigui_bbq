@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/screen/add_transaction/add_transaction_screen.dart';
+import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
 
 class TableScreen extends StatefulWidget {
   const TableScreen({super.key});
@@ -15,23 +15,31 @@ class TableScreen extends StatefulWidget {
 class _TableScreenState extends State<TableScreen> {
   final _streamTable =
       FirebaseFirestore.instance.collection("Table").snapshots();
-  final _docsTable = FirebaseFirestore.instance.collection("Table");
+  // final _docsTable = FirebaseFirestore.instance.collection("Table");
+
+  int countAvailableTable(List data) {
+    int cnt = 0;
+    if (data.isNotEmpty) {
+      for (var table in data) {
+        if (table['status'] == "Available") {
+          cnt++;
+        }
+      }
+    }
+    return cnt;
+  }
+
+  final addTransactionCtl = Get.find<AddTransactionController>();
+  @override
+  void initState() {
+    super.initState();
+    addTransactionCtl.getListBuffer();
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     // double w = MediaQuery.of(context).size.width;
-
-    int countAvailableTable(List data) {
-      int cnt = 0;
-      if (data.isNotEmpty) {
-        for (var table in data) {
-          if (table['status'] == "Available") {
-            cnt++;
-          }
-        }
-      }
-      return cnt;
-    }
 
     return Scaffold(
       appBar: AppBar(

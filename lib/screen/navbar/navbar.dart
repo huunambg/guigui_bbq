@@ -61,6 +61,10 @@ class _NavbarState extends State<Navbar> {
               icon: Icon(Icons.book_sharp),
               label: 'Hóa đơn',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_2_outlined),
+              label: 'Tài khoản',
+            ),
           ],
         ),
       ),

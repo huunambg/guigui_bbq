@@ -49,6 +49,8 @@ dependencies:
   cloud_firestore: ^5.6.0
   group_button: ^5.3.4
   dropdown_button2: ^2.3.9
+  flutter_switch: ^0.3.2
+  toggle_switch: ^2.3.0
 
 dev_dependencies:
   flutter_test:

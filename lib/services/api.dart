@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
+import 'package:qlnh/model/order_detail.dart';
+import 'package:qlnh/model/orders.dart';
+import 'package:qlnh/model/transaction.dart';
 import '/model/acount.dart';
 
 class ApiService {
@@ -30,7 +33,7 @@ class ApiService {
     } catch (e) {
       // Lỗi mạng hoặc các lỗi không xác định
       print("Network error: $e");
-      throw "Lỗi kết nối tới máy chủ.";
+      throw e.toString();
     }
   }
 
@@ -48,7 +51,67 @@ class ApiService {
     } catch (e) {
       // Lỗi mạng hoặc các lỗi không xác định
       print("Network error: $e");
-      throw "Unable to connect to server. Please check your internet connection.";
+      throw e.toString();
+    }
+  }
+
+  Future<int> addOrder(Orders order) async {
+    final url = Uri.parse('$baseUrl/add-order');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(order.toJson()),
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+      return jsonDecode(response.body)['insert_id'] as int;
+    } catch (e) {
+      print("addOrder: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> addOrderDetail(OrderDetail orderDetail) async {
+    final url = Uri.parse('$baseUrl/add-order-detail');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(orderDetail.toJson()),
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("addOrderDetail: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> addTransaction(Transaction transaction) async {
+    final url = Uri.parse('$baseUrl/add-transaction');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(transaction.toJson()),
+      );
+      print(jsonEncode(transaction.toJson()));
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print(url);
+      print("addTransaction: $e");
+      throw e.toString();
     }
   }
 

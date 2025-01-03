@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/menu.dart';
+import 'package:qlnh/model/order_detail.dart';
 
 class ItemMenu extends StatelessWidget {
-  const ItemMenu({super.key, required this.isShowMenu, required this.menu});
+  const ItemMenu({
+    super.key,
+    required this.isNotLast,
+    required this.menu,
+    required this.orderDetail,
+  });
   final Menu menu;
-  final bool isShowMenu;
+  final OrderDetail orderDetail;
+  final bool isNotLast;
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       width: double.infinity,
       decoration: BoxDecoration(
-          border: isShowMenu ? Border(bottom: const BorderSide()) : null),
+          border: isNotLast ? Border(bottom: const BorderSide()) : null),
       child: Row(
         children: [
           Expanded(
@@ -24,13 +31,19 @@ class ItemMenu extends StatelessWidget {
               )),
           Expanded(
               child: Text(
-            "2",
+            orderDetail.quantity.toString(),
             style: GlobalTextStyles.font16w600ColorBlack,
             textAlign: TextAlign.center,
           )),
           Expanded(
               child: Text(
-            "${menu.price! / 1000}K",
+            "${(orderDetail.price! / 1000).toInt()}K",
+            style: GlobalTextStyles.font16w600ColorBlack,
+            textAlign: TextAlign.center,
+          )),
+          Expanded(
+              child: Text(
+            "${(orderDetail.totalPrice! / 1000).toInt()}K",
             style: GlobalTextStyles.font16w600ColorBlack,
             textAlign: TextAlign.center,
           ))
