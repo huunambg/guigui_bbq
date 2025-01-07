@@ -8,46 +8,50 @@ class ItemMenu extends StatelessWidget {
     super.key,
     required this.isNotLast,
     required this.menu,
-    required this.orderDetail,
+    required this.orderDetail, required this.ontap,
   });
   final Menu menu;
   final OrderDetail orderDetail;
   final bool isNotLast;
+  final GestureTapCallback ontap;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          border: isNotLast ? Border(bottom: const BorderSide()) : null),
-      child: Row(
-        children: [
-          Expanded(
-              flex: 2,
-              child: Text(
-                menu.itemName!,
-                style: GlobalTextStyles.font16w600ColorBlack,
-                textAlign: TextAlign.start,
-              )),
-          Expanded(
-              child: Text(
-            orderDetail.quantity.toString(),
-            style: GlobalTextStyles.font16w600ColorBlack,
-            textAlign: TextAlign.center,
-          )),
-          Expanded(
-              child: Text(
-            "${(orderDetail.price! / 1000).toInt()}K",
-            style: GlobalTextStyles.font16w600ColorBlack,
-            textAlign: TextAlign.center,
-          )),
-          Expanded(
-              child: Text(
-            "${(orderDetail.totalPrice! / 1000).toInt()}K",
-            style: GlobalTextStyles.font16w600ColorBlack,
-            textAlign: TextAlign.center,
-          ))
-        ],
+    return GestureDetector(
+      onTap: ontap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            border: isNotLast ? Border(bottom: const BorderSide()) : null),
+        child: Row(
+          children: [
+            Expanded(
+                flex: 2,
+                child: Text(
+                  menu.itemName!,
+                  style: GlobalTextStyles.font16w600ColorBlack,
+                  textAlign: TextAlign.start,
+                )),
+            Expanded(
+                child: Text(
+              orderDetail.quantity.toString(),
+              style: GlobalTextStyles.font16w600ColorBlack,
+              textAlign: TextAlign.center,
+            )),
+            Expanded(
+                child: Text(
+              "${(orderDetail.price! / 1000).toInt()}K",
+              style: GlobalTextStyles.font16w600ColorBlack,
+              textAlign: TextAlign.center,
+            )),
+            Expanded(
+                child: Text(
+              "${(orderDetail.totalPrice! / 1000).toInt()}K",
+              style: GlobalTextStyles.font16w600ColorBlack,
+              textAlign: TextAlign.center,
+            ))
+          ],
+        ),
       ),
     );
   }

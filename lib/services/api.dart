@@ -12,7 +12,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.20.72:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.43.4:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -94,6 +94,45 @@ class ApiService {
     }
   }
 
+  Future<void> updateOrderDetail(OrderDetail orderDetail) async {
+    final url = Uri.parse('$baseUrl/update-order-detail');
+    print(orderDetail.toJsonUpdate());
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(orderDetail.toJsonUpdate()),
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("updateOrderDetail: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateTransaction(Transaction transaction) async {
+    final url = Uri.parse('$baseUrl/update-transaction');
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(transaction.toJsonUpdate()),
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("updateTransaction: $e");
+      throw e.toString();
+    }
+  }
+
   Future<void> addTransaction(Transaction transaction) async {
     final url = Uri.parse('$baseUrl/add-transaction');
     try {
@@ -111,6 +150,25 @@ class ApiService {
     } catch (e) {
       print(url);
       print("addTransaction: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteOrderDetail(int orderDetailId) async {
+    final url = Uri.parse('$baseUrl/delete-order-detail/$orderDetailId');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print(url);
+      print("deleteOrderDetail: $e");
       throw e.toString();
     }
   }
@@ -144,6 +202,33 @@ class ApiService {
   //     throw "Lỗi kết nối tới máy chủ.";
   //   }
   // }
+  Future<List<Transaction>> getAllTransaction() async {
+    final url = Uri.parse('$baseUrl/get-all-transaction');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransaction ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Transaction> listTransaction = listData
+            .map(
+              (e) => Transaction.fromJson(e),
+            )
+            .toList();
+        return listTransaction;
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllTransaction: $e");
+      throw e.toString();
+    }
+  }
 
   Future<List<Menu>> getAllMenu() async {
     final url = Uri.parse('$baseUrl/get-all-menu');
@@ -169,7 +254,58 @@ class ApiService {
       }
     } catch (e) {
       print("Network error: $e");
-      throw "Lỗi kết nối tới máy chủ.";
+      throw e.toString();
+    }
+  }
+
+  Future<List<OrderDetail>> getOrderDetailByOrder(int orderId) async {
+    final url = Uri.parse('$baseUrl/get-all-order-by-order/$orderId');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllOrderDetail ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<OrderDetail> listOrderDetail = listData
+            .map(
+              (e) => OrderDetail.fromJson(e),
+            )
+            .toList();
+        return listOrderDetail;
+      } else {
+        throw "Tài khoản hoặc mật khẩu không chính xác!.";
+      }
+    } catch (e) {
+      print("getOrderDetailByOrder: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<Transaction> getLastTransactionByTable(int tableId) async {
+    final url = Uri.parse('$baseUrl/get-last-transaction-by-table/$tableId');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransaction ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        Transaction transaction = Transaction.fromJson(data);
+        return transaction;
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getLastTransactionByTable: $e");
+      throw e.toString();
     }
   }
 

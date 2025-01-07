@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/screen/add_transaction/add_transaction_screen.dart';
 import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/screen/update_transaction/update_transaction_screen.dart';
 
 class TableScreen extends StatefulWidget {
   const TableScreen({super.key});
@@ -15,7 +17,7 @@ class TableScreen extends StatefulWidget {
 class _TableScreenState extends State<TableScreen> {
   final _streamTable =
       FirebaseFirestore.instance.collection("Table").snapshots();
-  // final _docsTable = FirebaseFirestore.instance.collection("Table");
+  final _docsTable = FirebaseFirestore.instance.collection("Table");
 
   int countAvailableTable(List data) {
     int cnt = 0;
@@ -39,7 +41,6 @@ class _TableScreenState extends State<TableScreen> {
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
-    // double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,12 +54,9 @@ class _TableScreenState extends State<TableScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final listTable = snapshot.data!.docs;
-                  print(listTable);
                   return Text(countAvailableTable(listTable).toString());
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const CircularProgressIndicator();
                 }
               },
             ),
@@ -70,7 +68,6 @@ class _TableScreenState extends State<TableScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final listTable = snapshot.data!.docs;
-            print(listTable);
             return GridView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: listTable.length,
@@ -81,20 +78,18 @@ class _TableScreenState extends State<TableScreen> {
 
                 return GestureDetector(
                   onTap: () {
-                    // _docsTable.doc(table.id).update({
-                    //   'status': "Available",
-                    // });
-                    Get.to(AddTransactionScreen(table: table));
+                    if (table.status == "Available") {
+                      Get.to(AddTransactionScreen(
+                          table: table, idTableFB: listTable[index].id));
+                    } else if (table.status == "Occupied") {
+                      Get.to(UpdateTransactionScreen(
+                          table: table, idTableFB: listTable[index].id));
+                    }
                   },
                   onLongPress: () {
-                    // _docsTable.doc(table.id).update({
-                    //   'status': "Fixing",
-                    // });
-                  },
-                  onDoubleTap: () {
-                    // _docsTable.doc(table.id).update({
-                    //   'status': "Occupied",
-                    // });
+                    _docsTable.doc(listTable[index].id).update({
+                      'status': "Available",
+                    });
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -115,19 +110,32 @@ class _TableScreenState extends State<TableScreen> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: table.status == "Available"
-                                  ? Colors.blue
+                                  ? Colors.green[300]
                                   : table.status == "Occupied"
-                                      ? Colors.yellow
-                                      : Colors.red,
+                                      ? Colors.orange[300]
+                                      : Colors.red[300],
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10))),
-                          child: Text(
-                            table.tableName.toString(),
-                            style: const TextStyle(
+                          child: Column(
+                            children: [
+                              Icon(
+                                table.status == "Available"
+                                    ? Icons.event_seat
+                                    : table.status == "Occupied"
+                                        ? Icons.people
+                                        : Icons.error,
                                 color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                                size: 32,
+                              ),
+                              Text(
+                                table.tableName.toString(),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -137,7 +145,9 @@ class _TableScreenState extends State<TableScreen> {
                             children: [
                               Row(
                                 children: [
-                                  const Text("Số người: ",
+                                  const Icon(Icons.chair, size: 16),
+                                  const SizedBox(width: 4),
+                                  const Text("Số ghế: ",
                                       style: TextStyle(fontSize: 12)),
                                   Text(table.capacity.toString(),
                                       style: const TextStyle(
@@ -147,14 +157,15 @@ class _TableScreenState extends State<TableScreen> {
                               ),
                               Row(
                                 children: [
-                                  // Text("Status: ",
-                                  //     style: TextStyle(fontSize: 12)),
-                                  Text(
-                                      statusTableConvert(
-                                          table.status.toString()),
-                                      style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
+                                  const Icon(Icons.info, size: 16),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      statusTableConvert(table.status.toString()),
+                                     style: GlobalTextStyles.font12w600ColorBlack,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],

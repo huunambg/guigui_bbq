@@ -7,17 +7,23 @@ import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/menu.dart';
 
-class BottomSheetMenu extends StatefulWidget {
-  const BottomSheetMenu({super.key, required this.menu, required this.onAdd});
+class BottomSheetUpdateMenu extends StatefulWidget {
+  const BottomSheetUpdateMenu({super.key, required this.menu, required this.onAdd, required this.quantity});
   final Menu menu;
   final ValueChanged<int> onAdd;
+  final int quantity;
   @override
-  State<BottomSheetMenu> createState() => _BottomSheetMenuState();
+  State<BottomSheetUpdateMenu> createState() => _BottomSheetUpdateMenuState();
 }
 
-class _BottomSheetMenuState extends State<BottomSheetMenu> {
+class _BottomSheetUpdateMenuState extends State<BottomSheetUpdateMenu> {
   int quantity = 1;
 
+@override
+  void initState() {
+    super.initState();
+    quantity = widget.quantity;
+  }
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -45,16 +51,9 @@ class _BottomSheetMenuState extends State<BottomSheetMenu> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.orangeAccent,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: const Icon(
-                    Icons.restaurant_menu,
-                    color: Colors.white,
-                    size: 50,
-                  ),
+                  height: 80,
+                  width: 80,
+                  color: Colors.amber,
                 ),
               ),
               const Gap(16.0),
@@ -77,7 +76,7 @@ class _BottomSheetMenuState extends State<BottomSheetMenu> {
               ),
               GestureDetector(
                 onTap: () {
-                  if (quantity > 1) {
+                  if (quantity > 0) {
                     setState(() {
                       quantity--;
                     });
@@ -116,7 +115,7 @@ class _BottomSheetMenuState extends State<BottomSheetMenu> {
                 widget.onAdd(quantity);
                 Get.back();
                 CherryToast.success(
-                        description: const Text("Thêm thành công",
+                        description: const Text("Cập nhật thành công",
                             style: TextStyle(color: Colors.black)),
                         animationDuration: const Duration(milliseconds: 1000),
                         autoDismiss: true)

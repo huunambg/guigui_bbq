@@ -4,18 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/order_detail.dart';
-import 'package:qlnh/model/orders.dart';
 import 'package:qlnh/model/transaction.dart';
+import 'package:qlnh/screen/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/services/api.dart';
 
-class AddTransactionController extends GetxController {
-  RxList<Transaction> transactionNew = <Transaction>[].obs;
-  RxList<Buffer> listBuffer = <Buffer>[].obs;
+class UpdateTransactionController extends GetxController {
   RxList<OrderDetail> listOrderDetail = <OrderDetail>[].obs;
   RxBool isShowQR = false.obs;
   RxString selectNumberPeople = "0".obs;
   Rx<Buffer> selectBuffer = Buffer().obs;
   RxInt totalMoney = 0.obs;
+  Rx<Transaction> transaction = Transaction().obs;
+  RxInt totalOldMenu = 0.obs;
+  RxInt selectPayment = 0.obs;
+  RxBool isFinish = false.obs;
+  Future<void> initUpdate(int tableId) async {
+    transaction.value = await ApiService().getLastTransactionByTable(tableId);
+
+    for (var buffer in Get.find<AddTransactionController>().listBuffer) {
+      if (buffer.bufferId == transaction.value.bufferId) {
+        selectBuffer.value = buffer;
+        break;
+      }
+    }
+    listOrderDetail.value =
+        await ApiService().getOrderDetailByOrder(transaction.value.orderId!);
+    totalOldMenu.value = listOrderDetail.length;
+    selectNumberPeople.value = transaction.value.countPeople.toString();
+    updateTotalMoney();
+  }
 
   void clearData() {
     listOrderDetail.clear();
@@ -23,6 +40,7 @@ class AddTransactionController extends GetxController {
     selectBuffer.value = Buffer();
     totalMoney.value = 0;
     isShowQR.value = false;
+    isFinish.value = false;
   }
 
   void updateSelectNumberPeople(String value) {
@@ -51,10 +69,6 @@ class AddTransactionController extends GetxController {
             selectBuffer.value.pricePerPerson!);
   }
 
-  void getListBuffer() async {
-    listBuffer.value = await ApiService().getAllBuffer();
-  }
-
   void updateQuantity(Transaction transaction) {}
 
   void addOrderDetail(OrderDetail orderDetail) {
@@ -74,33 +88,45 @@ class AddTransactionController extends GetxController {
     updateTotalMoney();
   }
 
-  void addTransaction(Orders order, Transaction transaction,
-      BuildContext context, String idTableFB) async {
+  void updateTransaction(
+      Transaction transaction, BuildContext context, String idTableFB) async {
     try {
-      int idOrder = await ApiService().addOrder(order);
       for (var orderDetail in listOrderDetail) {
-        await ApiService()
-            .addOrderDetail(orderDetail.copyWith(orderId: idOrder));
+        await ApiService().updateOrderDetail(orderDetail);
+        print(orderDetail.toJsonUpdate());
       }
-      await ApiService().addTransaction(
-          transaction.copyWith(orderId: idOrder, amount: totalMoney.value));
-
-      await fs.FirebaseFirestore.instance
-          .collection('Table')
-          .doc(idTableFB)
-          .update({
-        'status': 'Occupied',
-      });
+      for (int i = 0; i < listOrderDetail.length; i++) {
+        if (i >= totalOldMenu.value) {
+          await ApiService().addOrderDetail(
+              listOrderDetail[i].copyWith(orderId: transaction.orderId));
+        } else {
+          await ApiService().updateOrderDetail(listOrderDetail[i]);
+        }
+      }
+      await ApiService().updateTransaction(transaction.copyWith(
+          transactionId: this.transaction.value.transactionId,
+          bufferId: selectBuffer.value.bufferId,
+          countPeople: int.parse(selectNumberPeople.value)));
+      if (isFinish.value) {
+        fs.FirebaseFirestore.instance
+            .collection("Table")
+            .doc(idTableFB)
+            .update({
+          "status": "Available",
+        });
+      }
     } catch (e) {
       CherryToast.error(
-        title: const Text("Tạo hóa đơn thất bại"),
+        title: const Text("Cập nhật hóa đơn thất bại"),
       ).show(context);
       return;
     }
     Get.back();
 
     CherryToast.success(
-      title: const Text("Tạo hóa đơn thành công"),
+      title: const Text("Cập nhật hóa đơn thành công"),
     ).show(context);
   }
+
+
 }

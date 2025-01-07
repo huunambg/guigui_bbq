@@ -3,6 +3,7 @@ import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/screen/home/home_screen.dart';
 import 'package:qlnh/screen/table/table_screen.dart';
+import 'package:qlnh/screen/transaction/controller/transaction.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -14,9 +15,9 @@ class Navbar extends StatefulWidget {
 class _NavbarState extends State<Navbar> {
   int _currentIndex = 0;
   final List<Widget> tabs = [
-    HomeScreen(), // Tab 1: Replace with your content
-    TableScreen(), // Tab 2: Replace with your content
-    Container(), // Tab 3: Replace with your content
+    const HomeScreen(), // Tab 1: Replace with your content
+    const TableScreen(), // Tab 2: Replace with your content
+    const TransactionScreen(), // Tab 3: Replace with your content
     Container(), // Tab 4: Replace with your content
   ];
 

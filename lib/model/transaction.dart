@@ -46,7 +46,19 @@ class Transaction {
     data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
   }
-
+  Map<String, dynamic> toJsonUpdate() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['transaction_id'] = transactionId;
+    data['order_id'] = orderId;
+    data['account_id'] = accountId;
+    data['table_id'] = tableId;
+    data['payment_method'] = paymentMethod;
+    data['payment_date'] = paymentDate;
+    data['amount'] = amount;
+    data['count_people'] = countPeople;
+    data['buffer_id'] = bufferId; // Thêm vào JSON
+    return data;
+  }
   Transaction copyWith({
     int? transactionId,
     int? orderId,

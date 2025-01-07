@@ -1,4 +1,3 @@
-import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -15,26 +14,28 @@ import 'package:qlnh/screen/add_transaction/widget/header_table_menu.dart';
 import 'package:qlnh/screen/add_transaction/widget/item_menu.dart';
 import 'package:qlnh/screen/menu/controller/menu_controller.dart';
 import 'package:qlnh/screen/menu/menu_screen.dart';
+import 'package:qlnh/screen/update_transaction/controller/update_transaction_controller.dart';
+import 'package:qlnh/services/api.dart';
 import 'package:qlnh/util/convert.dart';
 import 'package:qlnh/widget/body_background.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import '../menu/widget/bottom_sheet_menu.dart';
-
-class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen(
+class UpdateTransactionScreen extends StatefulWidget {
+  const UpdateTransactionScreen(
       {super.key, required this.table, required this.idTableFB});
   final Tablee table;
   final String idTableFB;
   @override
-  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
+  State<UpdateTransactionScreen> createState() =>
+      _UpdateTransactionScreenState();
 }
 
-class _AddTransactionScreenState extends State<AddTransactionScreen> {
+class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
   List<String> items = [];
   String? selectedValue;
   Buffer? selectedBuffer;
+  final updateTransactionCtl = Get.find<UpdateTransactionController>();
   final addTransactionCtl = Get.find<AddTransactionController>();
   final menuCtl = Get.find<MenusController>();
   int selectPayment = 0;
@@ -48,6 +49,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         return (index + 1).toString();
       },
     ).toList();
+    updateTransactionCtl.initUpdate(widget.table.tableId!).whenComplete(
+      () {
+        selectedValue = updateTransactionCtl.selectNumberPeople.value;
+        selectedBuffer = updateTransactionCtl.selectBuffer.value;
+        selectPayment =
+            updateTransactionCtl.transaction.value.paymentMethod == "Chưa"
+                ? 0
+                : updateTransactionCtl.transaction.value.paymentMethod == "TM"
+                    ? 1
+                    : 2;
+        updateTransactionCtl.selectPayment.value = selectPayment;
+        setState(() {});
+      },
+    );
   }
 
   Menu getMenu(int id) {
@@ -62,7 +77,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   void dispose() {
-    addTransactionCtl.clearData();
+    updateTransactionCtl.clearData();
     super.dispose();
   }
 
@@ -75,8 +90,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         title: Text("Bàn ${widget.table.tableName}"),
         actions: [
           Obx(
-            () => addTransactionCtl.isShowQR.value &&
-                    addTransactionCtl.totalMoney.value > 0
+            () => updateTransactionCtl.isShowQR.value &&
+                    updateTransactionCtl.totalMoney.value > 0
                 ? TextButton(
                     onPressed: () {
                       showDialog(
@@ -89,7 +104,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                               child: Stack(
                                 children: [
                                   Image.network(
-                                      "https://img.vietqr.io/image/vietinbank-107872416964-print.jpg?amount=${addTransactionCtl.totalMoney}&addInfo=Thanh toan tien ban ${widget.table.tableName}&accountName=Nong Huu Nam"),
+                                      "https://img.vietqr.io/image/vietinbank-107872416964-print.jpg?amount=${updateTransactionCtl.totalMoney}&addInfo=Thanh toan tien ban ${widget.table.tableName}&accountName=Nong Huu Nam"),
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: IconButton(
@@ -143,7 +158,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     onPressed: () {
                       Get.to(MenuScreen(
                         order: Orders(),
-                        isUpdate: false,
+                        isUpdate: true,
                       ));
                     },
                     child: const Text("Thêm"))
@@ -158,16 +173,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               child: Column(
                 children: [
                   const HeaderTableMenu(),
-                  Obx(() => addTransactionCtl.listOrderDetail.isNotEmpty
+                  Obx(() => updateTransactionCtl.listOrderDetail.isNotEmpty
                       ? Column(
                           children: List.generate(
-                            addTransactionCtl.listOrderDetail.length,
+                            updateTransactionCtl.listOrderDetail.length,
                             (index) {
                               final item =
-                                  addTransactionCtl.listOrderDetail[index];
+                                  updateTransactionCtl.listOrderDetail[index];
                               return ItemMenu(
                                 isNotLast: index !=
-                                    addTransactionCtl.listOrderDetail.length -
+                                    updateTransactionCtl
+                                            .listOrderDetail.length -
                                         1,
                                 menu: getMenu(item.menuItemId!),
                                 orderDetail: item,
@@ -179,20 +195,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       quantity: item.quantity!,
                                       onAdd: (value) {
                                         if (value == 0) {
-                                          addTransactionCtl.listOrderDetail
+                                          ApiService().deleteOrderDetail(
+                                              item.orderDetailId!);
+                                          updateTransactionCtl.listOrderDetail
                                               .removeAt(index);
-                                          addTransactionCtl.updateTotalMoney();
+                                          updateTransactionCtl
+                                              .updateTotalMoney();
                                           return;
                                         }
-                                        addTransactionCtl
+                                        updateTransactionCtl
                                                 .listOrderDetail[index] =
-                                            addTransactionCtl
+                                            updateTransactionCtl
                                                 .listOrderDetail[index]
                                                 .copyWith(
                                                     quantity: value,
                                                     totalPrice:
                                                         value * item.price!);
-                                        addTransactionCtl.updateTotalMoney();
+                                        updateTransactionCtl.updateTotalMoney();
                                       },
                                     ),
                                   );
@@ -221,7 +240,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 const Gap(8.0),
                 Obx(
                   () => Text(
-                    tienviet(addTransactionCtl.totalMoney.value),
+                    tienviet(updateTransactionCtl.totalMoney.value),
                     style: GlobalTextStyles.font18w700ColorBlack
                         .copyWith(color: Colors.red),
                   ),
@@ -244,48 +263,70 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   totalSwitches: 3,
                   labels: const ['Chưa', 'TM', 'CK'],
                   onToggle: (index) {
-                    selectPayment = index!;
+                    updateTransactionCtl.selectPayment.value = index!;
+                    selectPayment = index;
                     if (index == 2) {
-                      addTransactionCtl.isShowQR.value = true;
+                      updateTransactionCtl.isShowQR.value = true;
                     } else {
-                      addTransactionCtl.isShowQR.value = false;
+                      updateTransactionCtl.isShowQR.value = false;
                     }
                   },
                 )
               ],
             ),
+            const Gap(16.0),
+            // Obx(
+            //   () => updateTransactionCtl.isShowQR.value &&
+            //           updateTransactionCtl.totalMoney.value > 0
+            //       ? AspectRatio(
+            //           aspectRatio: 600 / 776,
+            //           child: ClipRRect(
+            //             borderRadius: BorderRadius.circular(14),
+            //             child: Image.network(
+            //                 "https://img.vietqr.io/image/vietinbank-107872416964-print.jpg?amount=${updateTransactionCtl.totalMoney}&addInfo=Thanh toan tien ban ${widget.table.tableName}&accountName=Nong Huu Nam"),
+            //           ),
+            //         )
+            //       : const SizedBox(),
+            // ),
+
+            Obx(
+              () => updateTransactionCtl.selectPayment.value > 0
+                  ? Row(
+                      children: [
+                        Text(
+                          "Đã ăn xong",
+                          style: GlobalTextStyles.font16w600ColorBlack,
+                        ),
+                        Checkbox(
+                          value: updateTransactionCtl.isFinish.value,
+                          onChanged: (value) {
+                            updateTransactionCtl.isFinish.value = value!;
+                          },
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+            ),
+
             const Gap(24.0),
             MaterialButton(
               onPressed: () {
-                if (selectedBuffer == null || selectedValue == null) {
-                  CherryToast.error(
-                    title: const Text("Vui lòng chọn số lượng và buffer"),
-                  ).show(context);
-                } else {
-                  final transaction = Transaction(
-                    tableId: widget.table.tableId,
-                    bufferId: selectedBuffer!.bufferId,
-                    amount: addTransactionCtl.totalMoney.value,
-                    paymentMethod: selectPayment == 0
-                        ? "Chưa"
-                        : selectPayment == 1
-                            ? "TM"
-                            : "CK",
-                    countPeople:
-                        int.parse(addTransactionCtl.selectNumberPeople.value),
-                    accountId: 1,
-                    orderId: 1,
-                    paymentDate: DateTime.now().toString(),
-                  );
-                  addTransactionCtl.addTransaction(
-                      Orders(
-                          orderDate: DateTime.now().toString(),
-                          totalAmount: 0,
-                          status: "Pending"),
-                      transaction,
-                      context,
-                      widget.idTableFB);
-                }
+                final transaction = Transaction(
+                  tableId: widget.table.tableId,
+                  bufferId: selectedBuffer!.bufferId,
+                  amount: updateTransactionCtl.totalMoney.value,
+                  paymentMethod: selectPayment == 0
+                      ? "Chưa"
+                      : selectPayment == 1
+                          ? "TM"
+                          : "CK",
+                  countPeople:
+                      int.parse(updateTransactionCtl.selectNumberPeople.value),
+                  accountId: 1,
+                  orderId: updateTransactionCtl.transaction.value.orderId,paymentDate: DateTime.now().toString()
+                );
+                updateTransactionCtl.updateTransaction(
+                    transaction, context, widget.idTableFB);
               },
               minWidth: double.infinity,
               height: 56.0,
@@ -294,7 +335,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               color: GlobalColors.primary,
               child: Text(
-                "Tạo hóa đơn",
+                "Cập nhật hóa đơn",
                 style: GlobalTextStyles.font16w600ColorWhite,
               ),
             )
@@ -347,7 +388,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             .toList(),
         value: selectedValue,
         onChanged: (value) {
-          addTransactionCtl.updateSelectNumberPeople(value!);
+          updateTransactionCtl.updateSelectNumberPeople(value!);
           setState(() {
             selectedValue = value;
           });
@@ -419,7 +460,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             .toList(),
         value: selectedBuffer,
         onChanged: (value) {
-          addTransactionCtl.updateSelectBuffer(value!);
+          updateTransactionCtl.updateSelectBuffer(value!);
           setState(() {
             selectedBuffer = value;
           });
