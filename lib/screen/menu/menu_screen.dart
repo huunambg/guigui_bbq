@@ -24,13 +24,6 @@ class _MenuScreenState extends State<MenuScreen> {
   final addTransactionCtl = Get.find<AddTransactionController>();
   final updateTransactionCtl = Get.find<UpdateTransactionController>();
   final menuCtl = Get.find<MenusController>();
-
-  @override
-  void initState() {
-    super.initState();
-    menuCtl.getListMenu();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BodyCustom(

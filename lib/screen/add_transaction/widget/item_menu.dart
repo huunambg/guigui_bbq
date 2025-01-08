@@ -22,7 +22,7 @@ class ItemMenu extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         width: double.infinity,
         decoration: BoxDecoration(
-            border: isNotLast ? Border(bottom: const BorderSide()) : null),
+            border: isNotLast ? const Border(bottom: BorderSide()) : null),
         child: Row(
           children: [
             Expanded(
@@ -40,13 +40,13 @@ class ItemMenu extends StatelessWidget {
             )),
             Expanded(
                 child: Text(
-              "${(orderDetail.price! / 1000).toInt()}K",
+              "${orderDetail.price! ~/ 1000}K",
               style: GlobalTextStyles.font16w600ColorBlack,
               textAlign: TextAlign.center,
             )),
             Expanded(
                 child: Text(
-              "${(orderDetail.totalPrice! / 1000).toInt()}K",
+              "${orderDetail.totalPrice! ~/ 1000}K",
               style: GlobalTextStyles.font16w600ColorBlack,
               textAlign: TextAlign.center,
             ))
