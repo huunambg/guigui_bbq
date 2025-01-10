@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
+import 'package:qlnh/model/acount.dart';
+import 'package:qlnh/screen/account/account.dart';
 import 'package:qlnh/screen/home/home_screen.dart';
 import 'package:qlnh/screen/menu/controller/menu_controller.dart';
 import 'package:qlnh/screen/table/table_screen.dart';
@@ -21,7 +23,7 @@ class _NavbarState extends State<Navbar> {
     const TableScreen(), // Tab 2: Replace with your content
     const TransactionScreen(), // Tab 3: Replace with your content
     const HomeScreen(), // Tab 1: Replace with your content
-    Container(), // Tab 4: Replace with your content
+    AcountScreen()
   ];
 
   @override
