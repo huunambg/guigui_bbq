@@ -12,7 +12,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.43.4:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.100.18:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
