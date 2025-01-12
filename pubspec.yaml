@@ -51,6 +51,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter_switch: ^0.3.2
   toggle_switch: ^2.3.0
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

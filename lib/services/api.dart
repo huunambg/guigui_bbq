@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
@@ -12,7 +13,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.100.18:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.43.2:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -173,6 +174,23 @@ class ApiService {
     }
   }
 
+  Future<void> uploadAvatar(File? _selectedImage, int userId) async {
+    final url = Uri.parse('$baseUrl/upload-avatar/$userId');
+    if (_selectedImage == null) return;
+
+    final request = http.MultipartRequest('POST', url)
+      ..files.add(
+          await http.MultipartFile.fromPath('avatar', _selectedImage.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final data = jsonDecode(responseBody);
+      print(data);
+    }
+  }
+
   // Future<List<Class>> getListClassByTeacher(
   //     int teacherId, String accessToken) async {
   //   final url = Uri.parse('$baseUrl/get-class-by-teacher/$teacherId');
@@ -220,7 +238,7 @@ class ApiService {
               (e) => Transaction.fromJson(e),
             )
             .toList();
-        return listTransaction;
+        return listTransaction.reversed.toList();
       } else {
         throw response.body;
       }
