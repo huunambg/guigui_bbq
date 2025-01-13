@@ -1,12 +1,12 @@
 import 'package:qlnh/screen/together/splash/controller/splash_controller.dart';
-import 'package:qlnh/screen/together/user/login/controller/login_controller.dart';
-import 'package:qlnh/screen/together/user/table/controller/table_controller.dart';
-import 'package:qlnh/screen/together/user/transaction/controller/transaction_controller.dart';
-import 'package:qlnh/screen/together/user/update_transaction/controller/update_transaction_controller.dart';
+import 'package:qlnh/screen/user/login/controller/login_controller.dart';
+import 'package:qlnh/screen/user/table/controller/table_controller.dart';
+import 'package:qlnh/screen/user/transaction/controller/transaction_controller.dart';
+import 'package:qlnh/screen/user/update_transaction/controller/update_transaction_controller.dart';
 import '/util/preferences_util.dart';
 import 'package:get/get.dart';
-import 'screen/together/user/add_transaction/controller/add_transaction_controller.dart';
-import 'screen/together/user/menu/controller/menu_controller.dart';
+import 'screen/user/add_transaction/controller/add_transaction_controller.dart';
+import 'screen/user/menu/controller/menu_controller.dart';
 
 Future<void> init() async {
   await PreferencesUtil.init();

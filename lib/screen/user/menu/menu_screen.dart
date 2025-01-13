@@ -4,10 +4,10 @@ import 'package:qlnh/config/api_state.dart';
 import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/orders.dart';
-import 'package:qlnh/screen/together/user/add_transaction/controller/add_transaction_controller.dart';
-import 'package:qlnh/screen/together/user/menu/controller/menu_controller.dart';
-import 'package:qlnh/screen/together/user/menu/widget/bottom_sheet_menu.dart';
-import 'package:qlnh/screen/together/user/update_transaction/controller/update_transaction_controller.dart';
+import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/screen/user/menu/controller/menu_controller.dart';
+import 'package:qlnh/screen/user/menu/widget/bottom_sheet_menu.dart';
+import 'package:qlnh/screen/user/update_transaction/controller/update_transaction_controller.dart';
 import 'package:qlnh/util/convert.dart';
 import 'package:qlnh/widget/body_background.dart';
 

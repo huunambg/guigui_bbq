@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
@@ -260,7 +258,7 @@ class ApiService {
           "Content-Type": "application/json",
         },
       );
-      print("getAllTransaction ${jsonDecode(response.body)['data']}");
+      print("getAllTable ${jsonDecode(response.body)['data']}");
       if (response.statusCode == 200) {
         List<dynamic> listData = jsonDecode(response.body)['data'];
         List<Tablee> listTablee = listData

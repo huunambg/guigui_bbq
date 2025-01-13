@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:qlnh/screen/together/user/login/controller/login_controller.dart';
+import 'package:qlnh/screen/user/login/controller/login_controller.dart';
 import '/config/api_state.dart';
 import '/model/acount.dart';
 import '/model/user.dart';
-import '../../user/login/login_screen.dart';
-import '../../user/navbar/navbar.dart';
+import '../../../user/login/login_screen.dart';
+import '../../../user/navbar/navbar.dart';
 import '../../oboarding/onboarding.dart';
 import '/services/api.dart';
 import '/util/preferences_util.dart';

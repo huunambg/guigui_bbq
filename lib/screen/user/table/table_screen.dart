@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/table.dart';
-import 'package:qlnh/screen/together/user/update_transaction/update_transaction_screen.dart';
-import 'package:qlnh/screen/together/user/add_transaction/add_transaction_screen.dart';
-import 'package:qlnh/screen/together/user/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/screen/user/update_transaction/update_transaction_screen.dart';
+import 'package:qlnh/screen/user/add_transaction/add_transaction_screen.dart';
+import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 
 class TableScreen extends StatefulWidget {
   const TableScreen({super.key});

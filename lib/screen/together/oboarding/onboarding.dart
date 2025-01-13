@@ -1,4 +1,4 @@
-import '../user/login/login_screen.dart';
+import '../../user/login/login_screen.dart';
 import '/widget/body_background.dart';
 import 'package:gap/gap.dart';
 import '/config/global_color.dart';

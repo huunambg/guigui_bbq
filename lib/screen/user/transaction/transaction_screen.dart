@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:qlnh/config/api_state.dart';
+import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
-import 'package:qlnh/screen/together/user/detail_transaction/detail_transaction.dart';
-import 'package:qlnh/screen/together/user/transaction/controller/transaction_controller.dart';
+import 'package:qlnh/screen/user/detail_transaction/detail_transaction.dart';
+import 'package:qlnh/screen/user/table/controller/table_controller.dart';
+import 'package:qlnh/screen/user/transaction/controller/transaction_controller.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
@@ -15,11 +17,20 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   final transactionCtl = Get.find<TransactionController>();
-
+  final tableCtl = Get.find<TableController>();
   @override
   void initState() {
     super.initState();
     transactionCtl.getListTransaction();
+  }
+
+  Tablee getTable(int id) {
+    for (var element in tableCtl.listTable) {
+      if (element.tableId == id) {
+        return element;
+      }
+    }
+    return Tablee();
   }
 
   Future<void> _refreshTransactions() async {
@@ -94,7 +105,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Số bàn: ${transaction.tableId}",
+                            "Số bàn: ${getTable(transaction.tableId!).tableName}",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

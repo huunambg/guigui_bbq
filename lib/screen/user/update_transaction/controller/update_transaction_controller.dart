@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/transaction.dart';
-import 'package:qlnh/screen/together/user/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/services/api.dart';
 
 class UpdateTransactionController extends GetxController {

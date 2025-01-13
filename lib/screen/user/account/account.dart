@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/screen/together/splash/splash.dart';
-import 'package:qlnh/screen/together/user/login/controller/login_controller.dart';
-import 'package:qlnh/screen/together/user/login/login_screen.dart';
+import 'package:qlnh/screen/user/login/controller/login_controller.dart';
 import 'package:qlnh/services/api.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:qlnh/util/preferences_util.dart';
@@ -85,30 +85,29 @@ class _AcountScreenState extends State<AcountScreen> {
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         children: [
           const Gap(30.0),
           Center(
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
+                  borderRadius: BorderRadius.circular(1000),
                   child: _selectedImage != null
                       ? Image.file(
                           _selectedImage!,
-                          width: w * 0.24,
-                          height: w * 0.24,
+                          width: w * 0.3,
+                          height: w * 0.3,
                           fit: BoxFit.cover,
                         )
                       : Container(
-                          width: w * 0.24,
-                          height: w * 0.24,
+                          width: w * 0.3,
+                          height: w * 0.3,
                           decoration: BoxDecoration(
                             color: Colors.blueGrey.withOpacity(.2),
-                            borderRadius: BorderRadius.circular(100),
+                            borderRadius: BorderRadius.circular(1000),
                           ),
                           child: Obx(
                             () => loginCtl.userData.value.image != null &&
@@ -153,8 +152,22 @@ class _AcountScreenState extends State<AcountScreen> {
             ),
           ),
           const Gap(16.0),
+          Center(
+            child: Text(
+              loginCtl.userData.value.fullName!,
+              style: GlobalTextStyles.font18w700ColorBlack,
+            ),
+          ),
+          const Gap(8.0),
+          Center(
+            child: Text(
+              "Nhân viên chính thức",
+              style: GlobalTextStyles.font14w500Colorblack,
+            ),
+          ),
+          const Gap(16.0),
           ItemAccount_OK(
-              icon: Icons.location_on_outlined,
+              icon: Icons.person_2_outlined,
               onpressed: () {},
               titile: "Sửa thông tin"),
           ItemAccount_OK(
@@ -170,7 +183,7 @@ class _AcountScreenState extends State<AcountScreen> {
                   context,
                   title: "Xin chào",
                   message: "Bạn có muốn đăng xuất tài khoản!",
-                  confirmButtonText: "Đồng ý",
+                  confirmButtonText: "Đăng xuất",
                   cancelButtonText: "Quay lại",
                   onTapCancel: () {
                     Get.back();
