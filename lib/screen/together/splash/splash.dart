@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '/config/global_color.dart';
 import '/config/global_text_style.dart';
 import 'controller/splash_controller.dart';
 

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/orders.dart';
+import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
 import '/model/acount.dart';
 
@@ -13,7 +15,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.43.2:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.20.74:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -174,9 +176,9 @@ class ApiService {
     }
   }
 
-  Future<void> uploadAvatar(File? _selectedImage, int userId) async {
+  Future<String?> uploadAvatar(File? _selectedImage, int userId) async {
     final url = Uri.parse('$baseUrl/upload-avatar/$userId');
-    if (_selectedImage == null) return;
+    if (_selectedImage == null) return null;
 
     final request = http.MultipartRequest('POST', url)
       ..files.add(
@@ -187,8 +189,9 @@ class ApiService {
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       final data = jsonDecode(responseBody);
-      print(data);
+      return data['url'];
     }
+    return null;
   }
 
   // Future<List<Class>> getListClassByTeacher(
@@ -244,6 +247,33 @@ class ApiService {
       }
     } catch (e) {
       print("getAllTransaction: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<List<Tablee>> getAllTable() async {
+    final url = Uri.parse('$baseUrl/get-all-table');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransaction ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Tablee> listTablee = listData
+            .map(
+              (e) => Tablee.fromJson(e),
+            )
+            .toList();
+        return listTablee.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllTablee: $e");
       throw e.toString();
     }
   }

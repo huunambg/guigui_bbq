@@ -52,6 +52,7 @@ dependencies:
   flutter_switch: ^0.3.2
   toggle_switch: ^2.3.0
   image_picker: ^1.1.2
+  panara_dialogs: ^0.1.5
 
 dev_dependencies:
   flutter_test:

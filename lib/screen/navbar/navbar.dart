@@ -3,42 +3,34 @@ import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/screen/together/oboarding/account/account.dart';
-import 'package:qlnh/screen/together/user/table/controller/table_controller.dart';
-import 'package:qlnh/screen/together/user/table/table_screen.dart';
 import 'package:qlnh/screen/together/user/home/home_screen.dart';
 import 'package:qlnh/screen/together/user/menu/controller/menu_controller.dart';
+import 'package:qlnh/screen/together/user/table/table_screen.dart';
 import 'package:qlnh/screen/together/user/transaction/transaction_screen.dart';
 
-class NavbarUser extends StatefulWidget {
-  const NavbarUser({super.key});
+
+class Navbar extends StatefulWidget {
+  const Navbar({super.key});
 
   @override
-  State<NavbarUser> createState() => _NavbarUserState();
+  State<Navbar> createState() => _NavbarState();
 }
 
-class _NavbarUserState extends State<NavbarUser> {
+class _NavbarState extends State<Navbar> {
   final menuCtl = Get.find<MenusController>();
-  final tableCtl = Get.find<TableController>();
   int _currentIndex = 0;
   final List<Widget> tabs = [
     const TableScreen(), // Tab 2: Replace with your content
     const TransactionScreen(), // Tab 3: Replace with your content
     const HomeScreen(), // Tab 1: Replace with your content
-    const AcountScreen()
+    AcountScreen()
   ];
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
-    loadData();
-
-    
-  }
-
-  void loadData() {
     menuCtl.getListMenu();
-    tableCtl.getListTable();
   }
 
   @override

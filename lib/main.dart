@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/firebase_options.dart';
-import 'package:qlnh/screen/together/user/navbar/navbar.dart';
+import 'package:qlnh/screen/together/splash/splash.dart';
 import 'dependecy_injection.dart' as dependecy_injection;
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(debugShowCheckedModeBanner: false,
       title: 'Gui Gui BBQ',
-      home: NavbarUser(),
+      home: SplashScreen(),
     );
   }
 }

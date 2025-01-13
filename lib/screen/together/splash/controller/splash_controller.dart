@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:qlnh/user/login/controller/login_controller.dart';
+import 'package:qlnh/screen/together/user/login/controller/login_controller.dart';
 import '/config/api_state.dart';
 import '/model/acount.dart';
 import '/model/user.dart';
@@ -34,7 +34,7 @@ class SplashController extends GetxController {
               .login(Account(email: email, password: password));
           Get.find<LoginController>().userData.value =
               User.fromJson(result['data']);
-          Get.find<LoginController>().accessToken = result['token'];
+          print(result);
           apiState.value = ApiState.success;
           Get.offAll(() => const NavbarUser());
         } catch (e) {

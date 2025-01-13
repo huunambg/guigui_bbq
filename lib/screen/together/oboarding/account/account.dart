@@ -1,11 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import 'package:qlnh/screen/together/splash/splash.dart';
+import 'package:qlnh/screen/together/user/login/controller/login_controller.dart';
+import 'package:qlnh/screen/together/user/login/login_screen.dart';
 import 'package:qlnh/services/api.dart';
+import 'package:panara_dialogs/panara_dialogs.dart';
+import 'package:qlnh/util/preferences_util.dart';
 
 class AcountScreen extends StatefulWidget {
   const AcountScreen({super.key});
@@ -17,7 +22,7 @@ class AcountScreen extends StatefulWidget {
 class _AcountScreenState extends State<AcountScreen> {
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
-
+  final loginCtl = Get.find<LoginController>();
   Future<void> _pickImage() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -31,8 +36,16 @@ class _AcountScreenState extends State<AcountScreen> {
 
   Future<void> _uploadAvatar() async {
     if (_selectedImage == null) return;
-
-    ApiService().uploadAvatar(_selectedImage, 1);
+    try {
+      String? urlImage = await ApiService()
+          .uploadAvatar(_selectedImage, loginCtl.userData.value.userId!);
+      if (urlImage != null) {
+        loginCtl.userData.value.image = urlImage;
+        CherryToast.success(
+          title: const Text("Cập nhật ảnh đại điện thành công"),
+        ).show(context);
+      }
+    } catch (e) {}
   }
 
   void _showConfirmationDialog() {
@@ -97,9 +110,26 @@ class _AcountScreenState extends State<AcountScreen> {
                             color: Colors.blueGrey.withOpacity(.2),
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          child: Image.asset(
-                            "assets/images/avatar.png",
-                            fit: BoxFit.cover,
+                          child: Obx(
+                            () => loginCtl.userData.value.image != null &&
+                                    loginCtl.userData.value.image != "null"
+                                ? Image.network(
+                                    loginCtl.userData.value.image!,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    },
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(Icons.error),
+                                  )
+                                : Image.asset(
+                                    "assets/images/avatar.png",
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         ),
                 ),
@@ -134,7 +164,33 @@ class _AcountScreenState extends State<AcountScreen> {
               onpressed: () {},
               titile: "Hướng dẫn"),
           ItemAccount_OK(
-              icon: Icons.lock_outline, onpressed: () {}, titile: "Đăng xuất"),
+              icon: Icons.lock_outline,
+              onpressed: () {
+                PanaraConfirmDialog.show(
+                  context,
+                  title: "Xin chào",
+                  message: "Bạn có muốn đăng xuất tài khoản!",
+                  confirmButtonText: "Đồng ý",
+                  cancelButtonText: "Quay lại",
+                  onTapCancel: () {
+                    Get.back();
+                  },
+                  onTapConfirm: () {
+                    Get.back();
+                    Future.delayed(
+                      1.seconds,
+                      () {
+                        PreferencesUtil.clearEmail();
+                        PreferencesUtil.clearPassword();
+                        Get.offAll(const SplashScreen());
+                      },
+                    );
+                  },
+                  panaraDialogType: PanaraDialogType.warning,
+                  barrierDismissible: false,
+                );
+              },
+              titile: "Đăng xuất"),
         ],
       ),
     );

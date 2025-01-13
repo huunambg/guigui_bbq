@@ -15,6 +15,14 @@ class PreferencesUtil {
     return _pref?.getString("email");
   }
 
+  static Future<void> clearEmail() async {
+    await _pref?.remove("email");
+  }
+
+  static Future<void> clearPassword() async {
+    await _pref?.remove("password");
+  }
+
   static Future<void> setPassword(String password) async {
     await _pref?.setString("password", password);
   }

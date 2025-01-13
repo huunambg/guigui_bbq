@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,6 @@ import '/util/preferences_util.dart';
 class LoginController extends GetxController {
   var apiState = ApiState.success.obs;
   Rx<User> userData = User().obs;
-  var accessToken = "";
   void checkLogin() {
     String? email = PreferencesUtil.getEmail();
     String? password = PreferencesUtil.getPassword();
