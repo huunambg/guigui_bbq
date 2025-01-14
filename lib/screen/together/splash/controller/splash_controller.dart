@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:qlnh/screen/admin/navbar/navbar.dart';
 import 'package:qlnh/screen/user/login/controller/login_controller.dart';
 import '/config/api_state.dart';
 import '/model/acount.dart';
@@ -36,7 +37,11 @@ class SplashController extends GetxController {
               User.fromJson(result['data']);
           print(result);
           apiState.value = ApiState.success;
-          Get.offAll(() => const NavbarUser());
+          if (result['data']['role'] == 'Admin') {
+            Get.offAll(() => const NavBarAdmin());
+          } else {
+            Get.offAll(() => const NavbarUser());
+          }
         } catch (e) {
           apiState.value = ApiState.success;
           Get.offAll(() => const LoginScreen());

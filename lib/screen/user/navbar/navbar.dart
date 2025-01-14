@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
-import 'package:qlnh/screen/user/account/account.dart';
+import 'package:qlnh/screen/together/account/account.dart';
+import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/notification/notification_screen.dart';
 import 'package:qlnh/screen/user/table/controller/table_controller.dart';
 import 'package:qlnh/screen/user/table/table_screen.dart';
-import 'package:qlnh/screen/user/menu/controller/menu_controller.dart';
+import 'package:qlnh/controller/menu_controller.dart';
 import 'package:qlnh/screen/user/transaction/transaction_screen.dart';
 
 class NavbarUser extends StatefulWidget {
@@ -19,6 +20,7 @@ class NavbarUser extends StatefulWidget {
 class _NavbarUserState extends State<NavbarUser> {
   final menuCtl = Get.find<MenusController>();
   final tableCtl = Get.find<TableController>();
+  final addTransactionCtl = Get.find<AddTransactionController>();
   int _currentIndex = 0;
   final List<Widget> tabs = [
     const TableScreen(), // Tab 2: Replace with your content
@@ -30,13 +32,13 @@ class _NavbarUserState extends State<NavbarUser> {
   @override
   void initState() {
     super.initState();
-
     loadData();
   }
 
   void loadData() {
     menuCtl.getListMenu();
     tableCtl.getListTable();
+    addTransactionCtl.getListBuffer();
   }
 
   @override

@@ -44,41 +44,17 @@ class _BottomSheetMenuState extends State<BottomSheetMenu> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: widget.menu.image != null &&
-                          widget.menu.image != "null"
-                      ? Image.network(
-                          widget.menu.image!,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                            Icons.error,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                        )
-                      : Image.network(
-                          "Null",
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                            Icons.error,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                        ),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.orangeAccent,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Icon(
+                    Icons.restaurant_menu,
+                    color: Colors.white,
+                    size: 50,
+                  ),
                 ),
               ),
               const Gap(16.0),

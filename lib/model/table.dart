@@ -15,6 +15,13 @@ class Tablee {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['table_name'] = this.tableName;
+    data['capacity'] = this.capacity.toString();
+    return data;
+  }
+
+  Map<String, dynamic> toJsonUpdate() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['table_id'] = this.tableId;
     data['table_name'] = this.tableName;
     data['capacity'] = this.capacity;

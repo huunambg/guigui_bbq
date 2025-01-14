@@ -14,15 +14,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   final CollectionReference notifications =
       FirebaseFirestore.instance.collection('notifications');
 
-  int? _lastNotificationCount; // Trạng thái lưu số lượng thông báo trước đó
+  int? _lastNotificationCount; 
 
-  void addNotification() async {
-    await FirebaseFirestore.instance.collection('notifications').add({
-      'title': 'Thông báo mới',
-      'message': 'Đây là một thông báo mới.',
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +24,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       appBar: AppBar(
         title: const Text('Thông báo'),
         centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                addNotification();
-              },
-              icon: const Icon(Icons.add))
-        ],
+       
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream:

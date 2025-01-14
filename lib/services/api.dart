@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
@@ -52,6 +53,107 @@ class ApiService {
     } catch (e) {
       // Lỗi mạng hoặc các lỗi không xác định
       print("Network error: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteTable(int id) async {
+    final url = Uri.parse('$baseUrl/delete-table/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteTable: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<int> addTable(Tablee table) async {
+    final url = Uri.parse('$baseUrl/add-table');
+    try {
+      final response = await http.post(url, body: table.toJson());
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['insert_id'];
+      } else {
+        print('addTable: ${response.body}'); //
+        return 0;
+      }
+    } catch (e) {
+      print('addTable: $e');
+      return 0;
+    }
+  }
+
+  Future<void> addMenuWithImage(Menu menu, File? selectedImage) async {
+    final url = Uri.parse('$baseUrl/add-menu-image');
+    try {
+      final request = http.MultipartRequest('POST', url)
+        ..headers['Content-Type'] = 'application/json'
+        ..fields['item_name'] = menu.itemName!
+        ..fields['price'] = menu.price.toString()
+        ..fields['category'] = "Đồ ăn"
+        ..files.add(await http.MultipartFile.fromPath(
+            'image', selectedImage!.path)); // Upload ảnh
+      final response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return;
+      } else {
+        final responseString = await response.stream.bytesToString();
+        final responseJson = jsonDecode(responseString);
+        print('Server Response: $responseJson'); //
+        throw ("Add menu failure status");
+      }
+    } catch (e) {
+      print("Add menu: $e");
+    }
+  }
+
+  Future<void> updateMenuWithImage(Menu menu, File? selectedImage) async {
+    final url = Uri.parse('$baseUrl/update-menu');
+    try {
+      final request = http.MultipartRequest('PUT', url)
+        ..headers['Content-Type'] = 'application/json'
+        ..fields['menu_id'] = menu.menuId.toString()
+        ..fields['item_name'] = menu.itemName!
+        ..fields['price'] = menu.price.toString()
+        ..fields['category'] = "Đồ ăn"
+        ..files.add(await http.MultipartFile.fromPath(
+            'image', selectedImage!.path)); // Upload ảnh
+      final response = await request.send();
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return;
+      } else {
+        final responseString = await response.stream.bytesToString();
+        final responseJson = jsonDecode(responseString);
+        print('Server Response: $responseJson'); //
+        throw ("Add menu failure status");
+      }
+    } catch (e) {
+      print("Add menu: $e");
+    }
+  }
+
+  Future<void> deleteMenu(int id) async {
+    final url = Uri.parse('$baseUrl/delete-menu/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteMenu: $e");
       throw e.toString();
     }
   }

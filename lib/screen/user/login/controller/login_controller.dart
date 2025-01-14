@@ -1,6 +1,7 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qlnh/screen/admin/navbar/navbar.dart';
 import '/config/api_state.dart';
 import '/model/acount.dart';
 import '/model/user.dart';
@@ -29,7 +30,11 @@ class LoginController extends GetxController {
       await PreferencesUtil.setEmail(email);
       await PreferencesUtil.setPassword(password);
       apiState.value = ApiState.success;
-      Get.offAll(() => const NavbarUser());
+      if (result['data']['role'] == 'Admin') {
+        Get.offAll(() => const NavBarAdmin());
+      } else {
+        Get.offAll(() => const NavbarUser());
+      }
     } catch (e) {
       apiState.value = ApiState.success;
       // Hiển thị lỗi mạng hoặc lỗi khác

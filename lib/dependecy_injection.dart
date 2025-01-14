@@ -6,7 +6,7 @@ import 'package:qlnh/screen/user/update_transaction/controller/update_transactio
 import '/util/preferences_util.dart';
 import 'package:get/get.dart';
 import 'screen/user/add_transaction/controller/add_transaction_controller.dart';
-import 'screen/user/menu/controller/menu_controller.dart';
+import 'controller/menu_controller.dart';
 
 Future<void> init() async {
   await PreferencesUtil.init();

@@ -14,7 +14,7 @@ import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_cont
 import 'package:qlnh/screen/user/add_transaction/widget/bottom_sheet_update_menu.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/header_table_menu.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/item_menu.dart';
-import 'package:qlnh/screen/user/menu/controller/menu_controller.dart';
+import 'package:qlnh/controller/menu_controller.dart';
 import 'package:qlnh/util/convert.dart';
 import 'package:qlnh/widget/body_background.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';

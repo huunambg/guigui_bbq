@@ -160,9 +160,13 @@ class _AcountScreenState extends State<AcountScreen> {
           ),
           const Gap(8.0),
           Center(
-            child: Text(
-              "Nhân viên chính thức",
-              style: GlobalTextStyles.font14w500Colorblack,
+            child: Obx(
+              () => Text(
+                loginCtl.userData.value.role == 'Admin'
+                    ? "Quản lý nhà hàng"
+                    : "Nhân viên chính thức",
+                style: GlobalTextStyles.font14w500Colorblack,
+              ),
             ),
           ),
           const Gap(16.0),
