@@ -1,20 +1,14 @@
-import 'dart:convert';
-import 'package:cherry_toast/cherry_toast.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/screen/admin/menu_admin/menu_screen.dart';
 import 'package:qlnh/screen/admin/notification_admin/notification_admin_screen.dart';
+import 'package:qlnh/screen/admin/transaction_admin/transaction_admin_screen.dart';
 import 'package:qlnh/screen/together/account/account.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/controller/menu_controller.dart';
 import 'package:qlnh/screen/user/table/controller/table_controller.dart';
-import 'package:qlnh/screen/user/table/table_screen.dart';
-import 'package:qlnh/screen/user/transaction/transaction_screen.dart';
-
 import '../table_admin/table_admin_screen.dart';
 
 class NavBarAdmin extends StatefulWidget {
@@ -42,7 +36,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
   final tab = [
     const TableAdminScreen(),
     const MenuAdminScreen(),
-    const TransactionScreen(),
+    const TransactionAdminScreen(),
     const AcountScreen(),
   ];
 
@@ -60,8 +54,6 @@ class _NavBarAdminState extends State<NavBarAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
-    double h = MediaQuery.of(context).size.height;
     return Scaffold(
       body: tab[_bottomNavIndex],
       floatingActionButton: FloatingActionButton(

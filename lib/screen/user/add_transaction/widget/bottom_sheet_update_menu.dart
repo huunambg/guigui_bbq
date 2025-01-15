@@ -8,7 +8,11 @@ import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/menu.dart';
 
 class BottomSheetUpdateMenu extends StatefulWidget {
-  const BottomSheetUpdateMenu({super.key, required this.menu, required this.onAdd, required this.quantity});
+  const BottomSheetUpdateMenu(
+      {super.key,
+      required this.menu,
+      required this.onAdd,
+      required this.quantity});
   final Menu menu;
   final ValueChanged<int> onAdd;
   final int quantity;
@@ -19,11 +23,12 @@ class BottomSheetUpdateMenu extends StatefulWidget {
 class _BottomSheetUpdateMenuState extends State<BottomSheetUpdateMenu> {
   int quantity = 1;
 
-@override
+  @override
   void initState() {
     super.initState();
     quantity = widget.quantity;
   }
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -50,10 +55,41 @@ class _BottomSheetUpdateMenuState extends State<BottomSheetUpdateMenu> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Container(
+                child: SizedBox(
                   height: 80,
                   width: 80,
-                  color: Colors.amber,
+                  child: widget.menu.image != null &&
+                          widget.menu.image != "null"
+                      ? Image.network(
+                          widget.menu.image!,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                            Icons.error,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                        )
+                      : Image.network(
+                          "Null",
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                            Icons.error,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                        ),
                 ),
               ),
               const Gap(16.0),

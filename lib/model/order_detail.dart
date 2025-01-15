@@ -40,7 +40,7 @@ class OrderDetail {
     data['menu_item_id'] = this.menuItemId;
     data['quantity'] = this.quantity;
     data['price'] = this.price;
-    data['total_price'] = this.totalPrice;
+  //  data['total_price'] = this.totalPrice;
     return data;
   }
 

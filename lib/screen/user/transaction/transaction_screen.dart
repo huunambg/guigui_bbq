@@ -1,10 +1,12 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:qlnh/config/api_state.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
-import 'package:qlnh/screen/user/detail_transaction/detail_transaction.dart';
+import 'package:qlnh/screen/together/detail_transaction/detail_transaction.dart';
 import 'package:qlnh/screen/user/table/controller/table_controller.dart';
 import 'package:qlnh/screen/user/transaction/controller/transaction_controller.dart';
 
@@ -18,6 +20,7 @@ class TransactionScreen extends StatefulWidget {
 class _TransactionScreenState extends State<TransactionScreen> {
   final transactionCtl = Get.find<TransactionController>();
   final tableCtl = Get.find<TableController>();
+  DateTime currentDate = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -56,6 +59,41 @@ class _TransactionScreenState extends State<TransactionScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: [
+          GestureDetector(
+            onTap: () async {
+              transactionCtl.getListTransaction();
+            },
+            child: const Icon(
+              Icons.replay_outlined,
+              size: 28,
+            ),
+          ),
+          const Gap(12.0),
+          GestureDetector(
+            onTap: () async {
+              var results = await showCalendarDatePicker2Dialog(
+                context: context,
+                config: CalendarDatePicker2WithActionButtonsConfig(
+                    calendarType: CalendarDatePicker2Type.single,
+                    currentDate: currentDate),
+                dialogSize: const Size(325, 400),
+                borderRadius: BorderRadius.circular(15),
+              );
+              try {
+                if (results!.isNotEmpty) {
+                  currentDate = results.first!;
+                  transactionCtl.getListTransactionByDate(results.first!);
+                }
+              } catch (e) {}
+            },
+            child: const Icon(
+              Icons.calendar_month,
+              size: 28,
+            ),
+          ),
+          const Gap(12.0)
+        ],
       ),
       body: Obx(() {
         switch (transactionCtl.apiState.value) {

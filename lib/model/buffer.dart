@@ -13,9 +13,16 @@ class Buffer {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['buffer_id'] = this.bufferId;
     data['buffer_type'] = this.bufferType;
-    data['price_per_person'] = this.pricePerPerson;
+    data['price_per_person'] = this.pricePerPerson.toString();
+    return data;
+  }
+
+  Map<String, dynamic> toJsonUpdate() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['buffer_id'] = this.bufferId.toString();
+    data['buffer_type'] = this.bufferType;
+    data['price_per_person'] = this.pricePerPerson.toString();
     return data;
   }
 }
