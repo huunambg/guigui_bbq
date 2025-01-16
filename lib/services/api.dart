@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/model/menu.dart';
@@ -14,7 +13,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.20.74:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.43.3:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');

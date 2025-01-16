@@ -7,7 +7,7 @@ import 'package:qlnh/screen/admin/add_menu/add_menu_screen.dart';
 import 'package:qlnh/screen/admin/menu_admin/widget/item_menu.dart';
 import 'package:qlnh/controller/menu_controller.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
-import 'package:qlnh/screen/update_menu/update_menu_screen.dart';
+import 'package:qlnh/screen/admin/update_menu/update_menu_screen.dart';
 import 'package:qlnh/widget/body_background.dart';
 
 class MenuAdminScreen extends StatefulWidget {
