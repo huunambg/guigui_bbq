@@ -56,6 +56,42 @@ class ApiService {
     }
   }
 
+  Future<void> deleteBuffer(int id) async {
+    final url = Uri.parse('$baseUrl/delete-buffer/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteBuffer: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteTransaction(int id) async {
+    final url = Uri.parse('$baseUrl/delete-transaction/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteTransaction: $e");
+      throw e.toString();
+    }
+  }
+
   Future<void> deleteTable(int id) async {
     final url = Uri.parse('$baseUrl/delete-table/$id');
     try {
@@ -71,6 +107,36 @@ class ApiService {
     } catch (e) {
       print("deleteTable: $e");
       throw e.toString();
+    }
+  }
+
+  Future<void> addBuffer(Buffer buffer) async {
+    final url = Uri.parse('$baseUrl/add-buffer');
+    try {
+      final response = await http.post(url, body: buffer.toJson());
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        print('addBuffer: ${response.body}'); //
+        throw (response.body);
+      }
+    } catch (e) {
+      print('addBuffer: $e');
+    }
+  }
+
+  Future<void> updateBuffer(Buffer buffer) async {
+    final url = Uri.parse('$baseUrl/update-buffer');
+    try {
+      final response = await http.put(url, body: buffer.toJsonUpdate());
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        print('updateBuffer: ${response.body}'); //
+        throw (response.body);
+      }
+    } catch (e) {
+      print('updateBuffer: $e');
     }
   }
 
@@ -346,6 +412,90 @@ class ApiService {
       }
     } catch (e) {
       print("getAllTransaction: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<List<Transaction>> getAllTransactionByDate(String dateTime) async {
+    final url = Uri.parse('$baseUrl/get-all-transaction-by-date/$dateTime');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransactionBydate ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Transaction> listTransaction = listData
+            .map(
+              (e) => Transaction.fromJson(e),
+            )
+            .toList();
+        return listTransaction.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllTransactionBydate: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<List<Transaction>> getAllTransactionByMonth(String dateTime) async {
+    final url = Uri.parse('$baseUrl/get-all-transaction-by-date/$dateTime');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransactionBydate ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Transaction> listTransaction = listData
+            .map(
+              (e) => Transaction.fromJson(e),
+            )
+            .toList();
+        return listTransaction.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllTransactionBydate: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<List<Transaction>> getAllTransactionByYear(String dateTime) async {
+    final url = Uri.parse('$baseUrl/get-all-transaction-by-date/$dateTime');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllTransactionBydate ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Transaction> listTransaction = listData
+            .map(
+              (e) => Transaction.fromJson(e),
+            )
+            .toList();
+        return listTransaction.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllTransactionBydate: $e");
       throw e.toString();
     }
   }

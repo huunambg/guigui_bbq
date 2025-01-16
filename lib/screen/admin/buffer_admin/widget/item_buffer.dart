@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:qlnh/config/global_color.dart';
-import 'package:qlnh/model/menu.dart';
+import 'package:qlnh/model/buffer.dart';
 import 'package:qlnh/util/convert.dart';
 
-class ItemMenuCustom extends StatelessWidget {
-  const ItemMenuCustom({super.key, required this.menu});
-  final Menu menu;
+class ItemBufferCustom extends StatelessWidget {
+  const ItemBufferCustom({super.key, required this.buffer});
+  final Buffer buffer;
 
   @override
   Widget build(BuildContext context) {
@@ -32,48 +32,27 @@ class ItemMenuCustom extends StatelessWidget {
         child: Row(
           children: [
             // Hình ảnh với khung cải tiến
-            Container(
-              height: 70,
-              width: 70,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200, // Nền dự phòng
-                borderRadius: BorderRadius.circular(12.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 2,
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-                border: Border.all(
-                  color: GlobalColors.primary.withOpacity(.6), // Màu viền
-                  width: 2.0,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Container(
+                height: 70,
+                width: 70,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200, // Nền dự phòng
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      spreadRadius: 2,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: menu.image != null && menu.image != "null"
-                    ? Image.network(
-                        menu.image!,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.error_outline,
-                          color: Colors.redAccent.shade200,
-                          size: 36,
-                        ),
-                      )
-                    : Icon(
-                        Icons.fastfood_outlined,
-                        color: Colors.grey.shade400,
-                        size: 36,
-                      ),
+                child: Image.asset(
+                  "assets/images/buffer.png",
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(width: 16.0),
@@ -83,7 +62,7 @@ class ItemMenuCustom extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    menu.itemName ?? "Chưa có tên",
+                    buffer.bufferType ?? "Chưa có tên",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
@@ -94,7 +73,7 @@ class ItemMenuCustom extends StatelessWidget {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    tienviet(menu.price ?? 0),
+                    "${tienviet(buffer.pricePerPerson ?? 0)}/người",
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 16.0,
@@ -113,7 +92,7 @@ class ItemMenuCustom extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  gradient:  LinearGradient(
+                  gradient: LinearGradient(
                     colors: [Colors.greenAccent, GlobalColors.primary],
                   ),
                   shape: BoxShape.circle,

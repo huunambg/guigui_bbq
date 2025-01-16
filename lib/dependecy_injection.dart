@@ -1,3 +1,4 @@
+import 'package:qlnh/screen/admin/buffer_admin/controller/buffer_controller.dart';
 import 'package:qlnh/screen/together/splash/controller/splash_controller.dart';
 import 'package:qlnh/screen/user/login/controller/login_controller.dart';
 import 'package:qlnh/screen/user/table/controller/table_controller.dart';
@@ -25,4 +26,6 @@ Future<void> init() async {
   Get.lazyPut(() => transactionController, fenix: true);
   final tableController = TableController();
   Get.lazyPut(() => tableController, fenix: true);
+  final bufferController = BufferController();
+  Get.lazyPut(() => bufferController, fenix: true);
 }

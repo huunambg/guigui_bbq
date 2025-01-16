@@ -7,7 +7,7 @@ class Transaction {
   String? paymentDate;
   int? amount;
   int? countPeople; // Thuộc tính countPeople
-  int? bufferId;    // Thuộc tính bufferId
+  int? bufferId; // Thuộc tính bufferId
 
   Transaction({
     this.transactionId,
@@ -35,7 +35,7 @@ class Transaction {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-  //  data['transaction_id'] = transactionId;
+    //  data['transaction_id'] = transactionId;
     data['order_id'] = orderId;
     data['account_id'] = accountId;
     data['table_id'] = tableId;
@@ -46,6 +46,7 @@ class Transaction {
     data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
   }
+
   Map<String, dynamic> toJsonUpdate() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['transaction_id'] = transactionId;
@@ -59,6 +60,7 @@ class Transaction {
     data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
   }
+
   Transaction copyWith({
     int? transactionId,
     int? orderId,
@@ -79,7 +81,17 @@ class Transaction {
       paymentDate: paymentDate ?? this.paymentDate,
       amount: amount ?? this.amount,
       countPeople: countPeople ?? this.countPeople,
-      bufferId: bufferId ?? this.bufferId, // Sử dụng giá trị hiện tại nếu không thay đổi
+      bufferId: bufferId ??
+          this.bufferId, // Sử dụng giá trị hiện tại nếu không thay đổi
     );
+  }
+
+  DateTime? get paymentDateAsDateTime {
+    if (paymentDate == null) return null;
+    try {
+      return DateTime.parse(paymentDate!);
+    } catch (e) {
+      return null;
+    }
   }
 }
