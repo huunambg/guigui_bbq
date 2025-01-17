@@ -23,7 +23,7 @@ class FormatDate {
   String formatDate(String? date) {
     if (date == null) return "Không xác định";
     try {
-      final parsedDate = DateTime.parse(date);
+      final parsedDate = DateTime.parse(date).add(7.hours);
       return DateFormat('dd/MM/yyyy HH:mm').format(parsedDate);
     } catch (e) {
       return "Không xác định";

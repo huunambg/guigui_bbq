@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class Transaction {
   int? transactionId;
   int? orderId;
@@ -89,7 +91,7 @@ class Transaction {
   DateTime? get paymentDateAsDateTime {
     if (paymentDate == null) return null;
     try {
-      return DateTime.parse(paymentDate!);
+      return DateTime.parse(paymentDate!).add(7.hours);
     } catch (e) {
       return null;
     }

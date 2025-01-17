@@ -7,13 +7,14 @@ import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/orders.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
+import 'package:qlnh/model/user.dart';
 import '/model/acount.dart';
 
 class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.43.3:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.20.74:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -52,6 +53,24 @@ class ApiService {
     } catch (e) {
       // Lỗi mạng hoặc các lỗi không xác định
       print("Network error: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteUser(int id) async {
+    final url = Uri.parse('$baseUrl/delete-user/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteUser: $e");
       throw e.toString();
     }
   }
@@ -122,6 +141,22 @@ class ApiService {
       }
     } catch (e) {
       print('addBuffer: $e');
+    }
+  }
+
+  Future<void> updateUser(User user) async {
+    final url = Uri.parse('$baseUrl/update-user/${user.userId}');
+    try {
+      print(user.toJson());
+      final response = await http.put(url, body: user.toJson());
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print('updateUser: $e');
     }
   }
 
@@ -388,6 +423,35 @@ class ApiService {
   //     throw "Lỗi kết nối tới máy chủ.";
   //   }
   // }
+
+  Future<List<User>> getAllUser() async {
+    final url = Uri.parse('$baseUrl/get-all-user');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllUser ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<User> listUser = listData
+            .map(
+              (e) => User.fromJson(e),
+            )
+            .toList();
+        return listUser.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllUser: $e");
+      throw e.toString();
+    }
+  }
+
   Future<List<Transaction>> getAllTransaction() async {
     final url = Uri.parse('$baseUrl/get-all-transaction');
     print(url);

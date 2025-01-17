@@ -175,7 +175,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GlobalColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 15),

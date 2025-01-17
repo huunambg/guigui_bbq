@@ -6,7 +6,6 @@ import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
-import 'package:intl/intl.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/header_table_menu.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/item_menu.dart';
@@ -14,6 +13,7 @@ import 'package:qlnh/controller/menu_controller.dart';
 import 'package:qlnh/screen/user/table/controller/table_controller.dart';
 import 'package:qlnh/services/api.dart';
 import 'package:qlnh/util/convert.dart';
+import 'package:qlnh/util/format_date.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
   final Transaction transaction;
@@ -26,15 +26,7 @@ class DetailTransactionScreen extends StatefulWidget {
 }
 
 class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
-  String _formatDate(String? date) {
-    if (date == null) return "Không xác định";
-    try {
-      final parsedDate = DateTime.parse(date);
-      return DateFormat('dd/MM/yyyy HH:mm').format(parsedDate);
-    } catch (e) {
-      return "Không xác định";
-    }
-  }
+
 
   final tableCtl = Get.find<TableController>();
   final menuCtl = Get.find<MenusController>();
@@ -176,7 +168,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 const Icon(Icons.date_range, color: Colors.black),
                 const SizedBox(width: 8),
                 Text(
-                  "Ngày tạo: ${_formatDate(widget.transaction.paymentDate)}",
+                  "Ngày tạo: ${FormatDate().formatDate(widget.transaction.paymentDate)}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,

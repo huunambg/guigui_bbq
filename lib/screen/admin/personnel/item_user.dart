@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:qlnh/config/global_color.dart';
-import 'package:qlnh/model/menu.dart';
-import 'package:qlnh/util/convert.dart';
+import 'package:qlnh/model/user.dart';
 
-class ItemMenuCustom extends StatelessWidget {
-  const ItemMenuCustom({super.key, required this.menu});
-  final Menu menu;
+class ItemUserCustom extends StatelessWidget {
+  const ItemUserCustom({super.key, required this.user});
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +45,12 @@ class ItemMenuCustom extends StatelessWidget {
                     offset: const Offset(0, 4),
                   ),
                 ],
-                border: Border.all(
-                  color: GlobalColors.primary.withOpacity(.6), // Màu viền
-                  width: 2.0,
-                ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: menu.image != null && menu.image != "null"
+                child: user.image != null && user.image != "null"
                     ? Image.network(
-                        menu.image!,
+                        user.image!,
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -83,7 +78,7 @@ class ItemMenuCustom extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    menu.itemName ?? "Chưa có tên",
+                    user.fullName ?? "Chưa có tên",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
@@ -94,7 +89,7 @@ class ItemMenuCustom extends StatelessWidget {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    tienviet(menu.price ?? 0),
+                    user.email!,
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 16.0,
@@ -104,34 +99,7 @@ class ItemMenuCustom extends StatelessWidget {
                 ],
               ),
             ),
-            // // Nút thêm vào giỏ hàng
-            // InkWell(
-            //   onTap: () {
-            //     // Hành động khi nhấn
-            //   },
-            //   borderRadius: BorderRadius.circular(24),
-            //   child: Container(
-            //     padding: const EdgeInsets.all(8.0),
-            //     decoration: BoxDecoration(
-            //       gradient:  LinearGradient(
-            //         colors: [Colors.greenAccent, GlobalColors.primary],
-            //       ),
-            //       shape: BoxShape.circle,
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.orangeAccent.withOpacity(0.4),
-            //           blurRadius: 8,
-            //           offset: const Offset(0, 4),
-            //         ),
-            //       ],
-            //     ),
-            //     child: const Icon(
-            //       Icons.check,
-            //       color: Colors.white,
-            //       size: 24.0,
-            //     ),
-            //   ),
-            // ),
+            // Nút thêm vào giỏ hàng
           ],
         ),
       ),

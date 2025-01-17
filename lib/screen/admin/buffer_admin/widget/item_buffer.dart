@@ -84,33 +84,33 @@ class ItemBufferCustom extends StatelessWidget {
               ),
             ),
             // Nút thêm vào giỏ hàng
-            InkWell(
-              onTap: () {
-                // Hành động khi nhấn
-              },
-              borderRadius: BorderRadius.circular(24),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.greenAccent, GlobalColors.primary],
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orangeAccent.withOpacity(0.4),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 24.0,
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     // Hành động khi nhấn
+            //   },
+            //   borderRadius: BorderRadius.circular(24),
+            //   child: Container(
+            //     padding: const EdgeInsets.all(8.0),
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         colors: [Colors.greenAccent, GlobalColors.primary],
+            //       ),
+            //       shape: BoxShape.circle,
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.orangeAccent.withOpacity(0.4),
+            //           blurRadius: 8,
+            //           offset: const Offset(0, 4),
+            //         ),
+            //       ],
+            //     ),
+            //     child: const Icon(
+            //       Icons.check,
+            //       color: Colors.white,
+            //       size: 24.0,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

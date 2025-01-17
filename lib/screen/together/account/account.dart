@@ -7,9 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/screen/admin/buffer_admin/buffer_screen.dart';
+import 'package:qlnh/screen/admin/personnel/personnel.dart';
 import 'package:qlnh/screen/admin/statistical/statistical.dart';
 import 'package:qlnh/screen/together/splash/splash.dart';
 import 'package:qlnh/screen/user/login/controller/login_controller.dart';
+import 'package:qlnh/screen/user/update_user/update_user_screen.dart';
 import 'package:qlnh/services/api.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:qlnh/util/preferences_util.dart';
@@ -60,7 +62,7 @@ class _AcountScreenState extends State<AcountScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -176,11 +178,13 @@ class _AcountScreenState extends State<AcountScreen> {
           ),
           const Gap(16.0),
           Center(
-            child: Text(
-              loginCtl.userData.value.fullName!,
-              style: GlobalTextStyles.font18w700ColorBlack.copyWith(
-                fontSize: 20,
-                color: Colors.black87,
+            child: Obx(
+              () => Text(
+                loginCtl.userData.value.fullName!,
+                style: GlobalTextStyles.font18w700ColorBlack.copyWith(
+                  fontSize: 20,
+                  color: Colors.black87,
+                ),
               ),
             ),
           ),
@@ -200,12 +204,25 @@ class _AcountScreenState extends State<AcountScreen> {
           const Gap(16.0),
           const Divider(),
           const Gap(16.0),
-          ItemAccount_OK(
-            iconColor: GlobalColors.primary,
-            icon: Icons.person_2_outlined,
-            onpressed: () {},
-            titile: "Sửa thông tin",
-          ),
+          loginCtl.userData.value.role == 'Admin'
+              ? ItemAccount_OK(
+                  iconColor: GlobalColors.primary,
+                  icon: Icons.person_2_outlined,
+                  onpressed: () {
+                    Get.to(() => const PersonnelAdminScreen());
+                  },
+                  titile: "Quản lý nhân viên",
+                )
+              : ItemAccount_OK(
+                  iconColor: GlobalColors.primary,
+                  icon: Icons.person_2_outlined,
+                  onpressed: () {
+                    Get.to(() => UpdateUserScreen(
+                          user: loginCtl.userData.value,
+                        ));
+                  },
+                  titile: "Sửa thông tin",
+                ),
           loginCtl.userData.value.role == 'Admin'
               ? ItemAccount_OK(
                   iconColor: GlobalColors.primary,
@@ -215,13 +232,24 @@ class _AcountScreenState extends State<AcountScreen> {
                   },
                   titile: "Quản lý Buffer",
                 )
+              : ItemAccount_OK(
+                  iconColor: GlobalColors.primary,
+                  icon: Icons.bookmark_border,
+                  onpressed: () {
+                    Get.to(() => const BufferAdminScreen());
+                  },
+                  titile: "Hướng dẫn",
+                ),
+          loginCtl.userData.value.role == 'Admin'
+              ? ItemAccount_OK(
+                  iconColor: GlobalColors.primary,
+                  icon: Icons.help_center_outlined,
+                  onpressed: () {
+                    Get.to(TransactionStatisticsScreen());
+                  },
+                  titile: "Thống kê",
+                )
               : const SizedBox(),
-          ItemAccount_OK(
-            iconColor: GlobalColors.primary,
-            icon: Icons.help_center_outlined,
-            onpressed: () {Get.to(TransactionStatisticsScreen());},
-            titile: "Thống kê",
-          ),
           ItemAccount_OK(
             iconColor: GlobalColors.primary,
             icon: Icons.lock_outline,
