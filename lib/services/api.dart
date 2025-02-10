@@ -44,7 +44,7 @@ class ApiService {
     try {
       final response = await http.post(
         url,
-        body: account.toJson(),
+        body: account.toJsonRegister(),
       );
       if (response.statusCode != 200) {
         print(response.body);
