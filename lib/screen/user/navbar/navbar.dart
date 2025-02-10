@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
+import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
 import 'package:qlnh/screen/together/account/account.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/notification/notification_screen.dart';
@@ -21,6 +22,7 @@ class _NavbarUserState extends State<NavbarUser> {
   final menuCtl = Get.find<MenusController>();
   final tableCtl = Get.find<TableController>();
   final addTransactionCtl = Get.find<AddTransactionController>();
+  final userCtl = Get.find<UserController>();
   int _currentIndex = 0;
   final List<Widget> tabs = [
     const TableScreen(), // Tab 2: Replace with your content
@@ -38,6 +40,7 @@ class _NavbarUserState extends State<NavbarUser> {
   void loadData() {
     menuCtl.getListMenu();
     tableCtl.getListTable();
+    userCtl.loadData();
     addTransactionCtl.getListBuffer();
   }
 

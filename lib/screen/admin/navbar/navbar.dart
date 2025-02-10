@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/screen/admin/menu_admin/menu_screen.dart';
 import 'package:qlnh/screen/admin/notification_admin/notification_admin_screen.dart';
+import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
 import 'package:qlnh/screen/admin/transaction_admin/transaction_admin_screen.dart';
 import 'package:qlnh/screen/together/account/account.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
@@ -29,6 +30,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
   final addTransactionCtl = Get.find<AddTransactionController>();
   final menuCtl = Get.find<MenusController>();
   final tableCtl = Get.find<TableController>();
+  final userCtl = Get.find<UserController>();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   int _bottomNavIndex = 0;
@@ -43,6 +45,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
   void loadData() {
     menuCtl.getListMenu();
     tableCtl.getListTable();
+    userCtl.loadData();
     addTransactionCtl.getListBuffer();
   }
 

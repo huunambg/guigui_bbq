@@ -6,6 +6,8 @@ import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
+import 'package:qlnh/model/user.dart';
+import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/header_table_menu.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/item_menu.dart';
@@ -26,8 +28,6 @@ class DetailTransactionScreen extends StatefulWidget {
 }
 
 class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
-
-
   final tableCtl = Get.find<TableController>();
   final menuCtl = Get.find<MenusController>();
   final addTransactionCtl = Get.find<AddTransactionController>();
@@ -61,6 +61,18 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   }
 
   List<OrderDetail> listOrderDetail = [];
+
+  User getUser() {
+    final userCtl = Get.find<UserController>();
+    for (var element in userCtl.listUser) {
+      print(element.fullName);
+      if (widget.transaction.accountId == element.userId) {
+        return element;
+      }
+    }
+
+    return User(fullName: "Quản lý");
+  }
 
   @override
   void initState() {
@@ -232,6 +244,26 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
             ),
             const SizedBox(height: 16),
 
+            Row(
+              children: [
+                const Icon(Icons.person_3_outlined, color: Colors.black),
+                const SizedBox(width: 8),
+                const Text(
+                  "Nhân viên: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color:
+                        Colors.black87, // Changed to a darker shade for clarity
+                  ),
+                ),
+                Text(
+                  getUser().fullName!,
+                  style: GlobalTextStyles.font16w600ColorBlack,
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
             // Danh sách món ăn và chi tiết
             Container(
               padding: const EdgeInsets.only(top: 8.0),
