@@ -1,6 +1,9 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:qlnh/model/acount.dart';
+import 'package:qlnh/services/api.dart';
 import '/config/global_color.dart';
 import '/config/global_text_style.dart';
 
@@ -17,6 +20,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _rePasswordController = TextEditingController();
   bool _isPasswordVisible = false;
   bool _isRePasswordVisible = false;
+
+  void register() {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+    String rePassword = _rePasswordController.text.trim();
+
+    if (email.isEmpty || !GetUtils.isEmail(email)) {
+      CherryToast.warning(
+        title: const Text("Email không hợp lệ"),
+      ).show(context);
+
+      return;
+    }
+
+    if (password.isEmpty || password.length < 4) {
+      CherryToast.warning(
+        title: const Text("Mật khẩu phải có ít nhất 4 ký tự"),
+      ).show(context);
+
+      return;
+    }
+
+    if (rePassword.isEmpty || rePassword != password) {
+      CherryToast.warning(
+        title: const Text("Mật khẩu nhập lại không khớp"),
+      ).show(context);
+
+      return;
+    }
+
+    ApiService().register(Account(email: email, password: password)).then(
+      (value) {
+        CherryToast.success(
+          title: const Text("Tạo tài khoản thành công"),
+        ).show(context);
+      },
+    ).catchError((e) {
+      CherryToast.error(
+        title: const Text("Email đã tồn tại"),
+      ).show(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,7 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-
+                    register();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GlobalColors.primary,

@@ -14,7 +14,7 @@ class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.20.74:3000/public/api"; // Thay bằng URL của bạn
+            "http://192.168.43.5:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -39,21 +39,19 @@ class ApiService {
     }
   }
 
-  Future<dynamic> register(Account account) async {
+  Future<void> register(Account account) async {
     final url = Uri.parse('$baseUrl/register');
     try {
       final response = await http.post(
         url,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(account.toJson()),
+        body: account.toJson(),
       );
-      return response;
+      if (response.statusCode != 200) {
+        print(response.body);
+        throw "Error";
+      }
     } catch (e) {
-      // Lỗi mạng hoặc các lỗi không xác định
-      print("Network error: $e");
-      throw e.toString();
+      rethrow;
     }
   }
 

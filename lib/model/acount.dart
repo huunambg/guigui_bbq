@@ -13,6 +13,7 @@ class Account {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['email'] = email;
     data['password'] = password;
+    data['user_name'] = "Chưa có";
     return data;
   }
 }
