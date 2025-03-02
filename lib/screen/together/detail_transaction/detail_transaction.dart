@@ -210,8 +210,29 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 )
               ],
             ),
-            const SizedBox(height: 16),
 
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Icon(Icons.discount_rounded, color: Colors.black),
+                const SizedBox(width: 8),
+                const Text(
+                  "Mã giảm giá: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black87, // Changed to a darker shade
+                  ),
+                ),
+                Text(
+                  widget.transaction.discountCode != ""
+                      ? widget.transaction.discountCode!
+                      : "Không có",
+                  style: GlobalTextStyles.font16w600ColorBlack,
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
             // Trạng thái thanh toán
             Row(
               children: [

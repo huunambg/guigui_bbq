@@ -9,6 +9,8 @@ import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/orders.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
+import 'package:qlnh/screen/admin/discount/controller/discount_controller.dart';
+import 'package:qlnh/screen/user/login/controller/login_controller.dart';
 import 'package:qlnh/screen/user/menu/menu_screen.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/bottom_sheet_update_menu.dart';
@@ -37,8 +39,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Buffer? selectedBuffer;
   final addTransactionCtl = Get.find<AddTransactionController>();
   final menuCtl = Get.find<MenusController>();
+  final loginCtl = Get.find<LoginController>();
   int selectPayment = 0;
-
+  int discountPrice = 0;
+  final TextEditingController _itemCodeController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -210,6 +214,45 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 16.0),
+            Text(
+              "Mã giảm giá",
+              style: GlobalTextStyles.font14w600ColorBlack,
+            ),
+            const Gap(4),
+            TextField(
+              controller: _itemCodeController,
+              onChanged: (value) {
+                try {
+                  for (var element
+                      in Get.find<DiscountController>().listDiscount) {
+                    if (value.toUpperCase() == element.code!.toUpperCase()) {
+                      discountPrice = element.price!;
+                      addTransactionCtl.totalMoney.value =
+                          addTransactionCtl.totalMoney.value - discountPrice;
+                    } else {
+                      addTransactionCtl.updateTotalMoney();
+                      setState(() {
+                        discountPrice = 0;
+                      });
+                    }
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              },
+              decoration: InputDecoration(
+                hintText: 'Nhập mã',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            Gap(8.0),
+            if (discountPrice > 0)
+              Text(
+                "Giảm: ${tienviet(discountPrice)}",
+                style: GlobalTextStyles.font16w600ColorBlack,
+              ),
             const Gap(8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,6 +309,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     tableId: widget.table.tableId,
                     bufferId: selectedBuffer!.bufferId,
                     amount: addTransactionCtl.totalMoney.value,
+                    discountCode: _itemCodeController.text.isNotEmpty
+                        ? _itemCodeController.text
+                        : "",
                     paymentMethod: selectPayment == 0
                         ? "Chưa"
                         : selectPayment == 1
@@ -273,7 +319,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             : "CK",
                     countPeople:
                         int.parse(addTransactionCtl.selectNumberPeople.value),
-                    accountId: 1,
+                    accountId: loginCtl.userData.value.userId,
                     orderId: 1,
                     paymentDate: DateTime.now().toString(),
                   );

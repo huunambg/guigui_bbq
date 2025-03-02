@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
+import 'package:qlnh/screen/admin/discount/controller/discount_controller.dart';
 import 'package:qlnh/screen/admin/menu_admin/menu_screen.dart';
 import 'package:qlnh/screen/admin/notification_admin/notification_admin_screen.dart';
 import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
@@ -33,6 +34,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
   final userCtl = Get.find<UserController>();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
+      final discountCtl = Get.find<DiscountController>();
   int _bottomNavIndex = 0;
 
   final tab = [
@@ -43,6 +45,7 @@ class _NavBarAdminState extends State<NavBarAdmin> {
   ];
 
   void loadData() {
+    discountCtl.getListDiscount();
     menuCtl.getListMenu();
     tableCtl.getListTable();
     userCtl.loadData();

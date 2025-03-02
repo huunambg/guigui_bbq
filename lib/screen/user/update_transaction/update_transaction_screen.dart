@@ -8,6 +8,7 @@ import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/orders.dart';
 import 'package:qlnh/model/table.dart';
 import 'package:qlnh/model/transaction.dart';
+import 'package:qlnh/screen/admin/discount/controller/discount_controller.dart';
 import 'package:qlnh/screen/user/menu/menu_screen.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
 import 'package:qlnh/screen/user/add_transaction/widget/bottom_sheet_update_menu.dart';
@@ -39,10 +40,12 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
   final addTransactionCtl = Get.find<AddTransactionController>();
   final menuCtl = Get.find<MenusController>();
   int selectPayment = 0;
-
+  int discountPrice = 0;
+  final TextEditingController _itemCodeController = TextEditingController();
   @override
   void initState() {
     super.initState();
+
     items = List.generate(
       widget.table.capacity!,
       (index) {
@@ -51,6 +54,9 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
     ).toList();
     updateTransactionCtl.initUpdate(widget.table.tableId!).whenComplete(
       () {
+        _itemCodeController.text =
+            updateTransactionCtl.transaction.value.discountCode!;
+
         selectedValue = updateTransactionCtl.selectNumberPeople.value;
         selectedBuffer = updateTransactionCtl.selectBuffer.value;
         selectPayment =
@@ -60,6 +66,24 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
                     ? 1
                     : 2;
         updateTransactionCtl.selectPayment.value = selectPayment;
+
+        try {
+          for (var element in Get.find<DiscountController>().listDiscount) {
+            if (_itemCodeController.text.toUpperCase() ==
+                element.code!.toUpperCase()) {
+              discountPrice = element.price!;
+              updateTransactionCtl.totalMoney.value =
+                  updateTransactionCtl.totalMoney.value - discountPrice;
+            } else {
+              updateTransactionCtl.updateTotalMoney();
+              setState(() {
+                discountPrice = 0;
+              });
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
         setState(() {});
       },
     );
@@ -230,6 +254,46 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
               ),
             ),
             const Gap(8.0),
+            const SizedBox(height: 16.0),
+            Text(
+              "Mã giảm giá",
+              style: GlobalTextStyles.font14w600ColorBlack,
+            ),
+            const Gap(4),
+            TextField(
+              controller: _itemCodeController,
+              onChanged: (value) {
+                try {
+                  for (var element
+                      in Get.find<DiscountController>().listDiscount) {
+                    if (value.toUpperCase() == element.code!.toUpperCase()) {
+                      discountPrice = element.price!;
+                      updateTransactionCtl.totalMoney.value =
+                          updateTransactionCtl.totalMoney.value - discountPrice;
+                    } else {
+                      updateTransactionCtl.updateTotalMoney();
+                      setState(() {
+                        discountPrice = 0;
+                      });
+                    }
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              },
+              decoration: InputDecoration(
+                hintText: 'Nhập mã',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            Gap(8.0),
+            if (discountPrice > 0)
+              Text(
+                "Giảm: ${tienviet(discountPrice)}",
+                style: GlobalTextStyles.font16w600ColorBlack,
+              ),
+            const Gap(8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -312,19 +376,19 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
             MaterialButton(
               onPressed: () {
                 final transaction = Transaction(
-                  tableId: widget.table.tableId,
-                  bufferId: selectedBuffer!.bufferId,
-                  amount: updateTransactionCtl.totalMoney.value,
-                  paymentMethod: selectPayment == 0
-                      ? "Chưa"
-                      : selectPayment == 1
-                          ? "TM"
-                          : "CK",
-                  countPeople:
-                      int.parse(updateTransactionCtl.selectNumberPeople.value),
-                  accountId: 1,
-                  orderId: updateTransactionCtl.transaction.value.orderId,paymentDate: DateTime.now().toString()
-                );
+                    tableId: widget.table.tableId,
+                    bufferId: selectedBuffer!.bufferId,
+                    amount: updateTransactionCtl.totalMoney.value,
+                    paymentMethod: selectPayment == 0
+                        ? "Chưa"
+                        : selectPayment == 1
+                            ? "TM"
+                            : "CK",
+                    countPeople: int.parse(
+                        updateTransactionCtl.selectNumberPeople.value),
+                    accountId: 1,
+                    orderId: updateTransactionCtl.transaction.value.orderId,
+                    paymentDate: DateTime.now().toString());
                 updateTransactionCtl.updateTransaction(
                     transaction, context, widget.idTableFB);
               },

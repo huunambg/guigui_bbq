@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:qlnh/model/buffer.dart';
+import 'package:qlnh/model/discount.dart';
 import 'package:qlnh/model/menu.dart';
 import 'package:qlnh/model/order_detail.dart';
 import 'package:qlnh/model/orders.dart';
@@ -10,11 +11,13 @@ import 'package:qlnh/model/transaction.dart';
 import 'package:qlnh/model/user.dart';
 import '/model/acount.dart';
 
+const String ipv4 ="172.19.201.168";
+
 class ApiService {
   final String baseUrl;
   ApiService()
       : baseUrl =
-            "http://192.168.43.5:3000/public/api"; // Thay bằng URL của bạn
+            "http://$ipv4:3000/public/api"; // Thay bằng URL của bạn
 
   Future<dynamic> login(Account account) async {
     final url = Uri.parse('$baseUrl/login');
@@ -52,6 +55,83 @@ class ApiService {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<List<Discount>> getAllDiscount() async {
+    final url = Uri.parse('$baseUrl/get-all-discount');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      print("getAllDiscount ${jsonDecode(response.body)['data']}");
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body)['data'];
+        List<Discount> listDiscount = listData
+            .map(
+              (e) => Discount.fromJson(e),
+            )
+            .toList();
+        return listDiscount.reversed.toList();
+      } else {
+        throw response.body;
+      }
+    } catch (e) {
+      print("getAllDiscount: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteDiscount(int id) async {
+    final url = Uri.parse('$baseUrl/delete-discount/$id');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      if (response.statusCode != 200) {
+        throw "Error: ${response.body}";
+      }
+    } catch (e) {
+      print("deleteDiscount: $e");
+      throw e.toString();
+    }
+  }
+
+  Future<void> addDiscount(Discount discount) async {
+    final url = Uri.parse('$baseUrl/add-discount');
+    try {
+      final response = await http.post(url, body: discount.toJsonAdd());
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        print('addDiscount: ${response.body}'); //
+        throw (response.body);
+      }
+    } catch (e) {
+      print('addDiscount: $e');
+    }
+  }
+
+  Future<void> updateDiscount(Discount discount) async {
+    final url = Uri.parse('$baseUrl/update-discount');
+    try {
+      print(discount.toJson());
+      final response = await http.put(url, body: discount.toJson());
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print('updateDiscount: $e');
     }
   }
 

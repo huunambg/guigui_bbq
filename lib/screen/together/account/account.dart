@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/screen/admin/buffer_admin/buffer_screen.dart';
+import 'package:qlnh/screen/admin/discount/discount_screen.dart';
 import 'package:qlnh/screen/admin/personnel/personnel.dart';
 import 'package:qlnh/screen/admin/statistical/statistical.dart';
 import 'package:qlnh/screen/together/splash/splash.dart';
@@ -240,6 +241,15 @@ class _AcountScreenState extends State<AcountScreen> {
                   },
                   titile: "Hướng dẫn",
                 ),
+          if (loginCtl.userData.value.role == 'Admin')
+            ItemAccount_OK(
+              iconColor: GlobalColors.primary,
+              icon: Icons.card_membership_rounded,
+              onpressed: () {
+                Get.to(() => const DiscountAdminScreen());
+              },
+              titile: "Quản lý mã giảm giá",
+            ),
           loginCtl.userData.value.role == 'Admin'
               ? ItemAccount_OK(
                   iconColor: GlobalColors.primary,

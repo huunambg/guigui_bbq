@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qlnh/config/global_color.dart';
 import 'package:qlnh/config/global_text_style.dart';
+import 'package:qlnh/screen/admin/discount/controller/discount_controller.dart';
 import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
 import 'package:qlnh/screen/together/account/account.dart';
 import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
@@ -23,6 +28,7 @@ class _NavbarUserState extends State<NavbarUser> {
   final tableCtl = Get.find<TableController>();
   final addTransactionCtl = Get.find<AddTransactionController>();
   final userCtl = Get.find<UserController>();
+    final discountCtl = Get.find<DiscountController>();
   int _currentIndex = 0;
   final List<Widget> tabs = [
     const TableScreen(), // Tab 2: Replace with your content
@@ -30,14 +36,56 @@ class _NavbarUserState extends State<NavbarUser> {
     const NotificationScreen(), // Tab 1: Replace with your content
     const AcountScreen()
   ];
+  final AudioPlayer audioPlayer = AudioPlayer();
+  final CollectionReference notifications =
+      FirebaseFirestore.instance.collection('notifications');
+
+  int? _lastNotificationCount;
+  late StreamSubscription<QuerySnapshot> _notificationsSubscription;
+
+  @override
+  void dispose() {
+    // Huỷ đăng ký khi màn hình bị đóng
+    _notificationsSubscription.cancel();
+    super.dispose();
+  }
+
+  // Hàm lắng nghe thông báo
+  void listenToNotifications() {
+    _notificationsSubscription = notifications
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+      final notificationDocs = snapshot.docs;
+
+      // Kiểm tra số lượng thông báo mới
+      if (_lastNotificationCount != null &&
+          _lastNotificationCount! < notificationDocs.length) {
+        // Hiển thị thông báo Toast
+        final newNotification = notificationDocs.first;
+        audioPlayer.play(AssetSource("sounds/sound.mp3"));
+        CherryToast.info(
+          title: Text('Thông báo mới: ${newNotification['title']}'),
+          toastDuration: const Duration(seconds: 5),
+        ).show(context);
+      }
+
+      // Cập nhật số lượng thông báo
+      _lastNotificationCount = notificationDocs.length;
+
+      // Bạn có thể xử lý các thông báo khác ở đây nếu cần
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     loadData();
+    listenToNotifications();
   }
 
   void loadData() {
+    discountCtl.getListDiscount();
     menuCtl.getListMenu();
     tableCtl.getListTable();
     userCtl.loadData();

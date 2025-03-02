@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -43,18 +42,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
           final notificationDocs = snapshot.data!.docs;
 
           // Kiểm tra số lượng thông báo mới
-          if (_lastNotificationCount != null &&
-              _lastNotificationCount! < notificationDocs.length) {
-            // Hiển thị thông báo Toast
-            final newNotification = notificationDocs.first;
-            Fluttertoast.showToast(
-              msg: "Thông báo mới: ${newNotification['title']}",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-            );
-          }
+          // if (_lastNotificationCount != null &&
+          //     _lastNotificationCount! < notificationDocs.length) {
+          //   // Hiển thị thông báo Toast
+          //   final newNotification = notificationDocs.first;
+          //   Fluttertoast.showToast(
+          //     msg: "Thông báo mới: ${newNotification['title']}",
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     backgroundColor: Colors.black87,
+          //     textColor: Colors.white,
+          //   );
+          // }
 
           // Cập nhật trạng thái số lượng thông báo
           _lastNotificationCount = notificationDocs.length;

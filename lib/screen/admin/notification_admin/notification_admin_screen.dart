@@ -1,8 +1,8 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_swipe_action_cell/core/controller.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -120,14 +120,9 @@ class _NotificationAdminScreenState extends State<NotificationAdminScreen> {
                         'message': _messageController.text,
                         'timestamp': FieldValue.serverTimestamp(),
                       });
-
-                      Fluttertoast.showToast(
-                        msg: "Thông báo đã được thêm!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                      );
+                      CherryToast.success(
+                              title: const Text('Thông báo đã được thêm!'))
+                          .show(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -238,13 +233,9 @@ class _NotificationAdminScreenState extends State<NotificationAdminScreen> {
                     onTapConfirm: () async {
                       Get.back();
                       await notifications.doc(notification.id).delete();
-                      Fluttertoast.showToast(
-                        msg: "Thông báo đã được xóa!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.yellow,
-                        textColor: Colors.black,
-                      );
+                      CherryToast.success(
+                              title: const Text('Thông báo đã được xóa!'))
+                          .show(context);
                     },
                     panaraDialogType: PanaraDialogType.warning,
                     barrierDismissible: false,

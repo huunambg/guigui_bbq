@@ -94,31 +94,101 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                     } else if (table.status == "Occupied") {
                       Get.to(UpdateTransactionScreen(
                           table: table, idTableFB: listTable[index].id));
+                    } else {
+                      CherryToast.error(
+                        title:
+                            const Text("Hiện tại bàn đang lỗi không thể Order"),
+                      ).show(context);
                     }
                   },
                   onLongPress: () {
                     // _docsTable.doc(listTable[index].id).update({
                     //   'status': "Available",
                     // });
-                    PanaraConfirmDialog.show(
-                      context,
-                      title: "Xóa bàn ${table.tableName}",
-                      message: "Bạn có xóa bàn khỏi danh sách",
-                      confirmButtonText: "Xóa",
-                      cancelButtonText: "Quay lại",
-                      onTapCancel: () {
-                        Get.back();
+
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Chọn chức năng"),
+                          content: const Text("Mời bạn chọn chức năng bàn"),
+                          actions: [
+                            Row(
+                              children: [
+                                TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                      PanaraConfirmDialog.show(
+                                        context,
+                                        title:
+                                            "Cập nhật bàn ${table.tableName} tạm hỏng",
+                                        message:
+                                            "Bạn có cập nhật trạng thái cho bàn trên",
+                                        confirmButtonText: "Cập nhật",
+                                        cancelButtonText: "Quay lại",
+                                        onTapCancel: () {
+                                          Get.back();
+                                        },
+                                        onTapConfirm: () async {
+                                          Get.back();
+                                          if (table.status == "Reserved") {
+                                            await _docsTable
+                                                .doc(listTable[index].id)
+                                                .update(
+                                                    {"status": "Available"});
+                                          } else {
+                                            await _docsTable
+                                                .doc(listTable[index].id)
+                                                .update({"status": "Reserved"});
+                                          }
+                                        },
+                                        panaraDialogType:
+                                            PanaraDialogType.warning,
+                                        barrierDismissible: false,
+                                      );
+                                    },
+                                    child: const Text("Tạm hỏng")),
+                                TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                      PanaraConfirmDialog.show(
+                                        context,
+                                        title: "Xóa bàn ${table.tableName}",
+                                        message:
+                                            "Bạn có xóa bàn khỏi danh sách",
+                                        confirmButtonText: "Xóa",
+                                        cancelButtonText: "Quay lại",
+                                        onTapCancel: () {
+                                          Get.back();
+                                        },
+                                        onTapConfirm: () async {
+                                          Get.back();
+                                          await ApiService()
+                                              .deleteTable(table.tableId!);
+                                          await _docsTable
+                                              .doc(listTable[index].id)
+                                              .delete();
+                                          CherryToast.success(
+                                            title: const Text(
+                                                "Xóa thành công bàn"),
+                                          ).show(context);
+                                        },
+                                        panaraDialogType:
+                                            PanaraDialogType.warning,
+                                        barrierDismissible: false,
+                                      );
+                                    },
+                                    child: const Text("Xóa bàn")),
+                                TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: const Text("Quay lại")),
+                              ],
+                            )
+                          ],
+                        );
                       },
-                      onTapConfirm: () async {
-                        Get.back();
-                        await ApiService().deleteTable(table.tableId!);
-                        await _docsTable.doc(listTable[index].id).delete();
-                        CherryToast.success(
-                          title: Text("Xóa thành công bàn"),
-                        ).show(context);
-                      },
-                      panaraDialogType: PanaraDialogType.warning,
-                      barrierDismissible: false,
                     );
                   },
                   child: Container(

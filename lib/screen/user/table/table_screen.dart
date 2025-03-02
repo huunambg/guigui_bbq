@@ -1,3 +1,4 @@
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -84,6 +85,11 @@ class _TableScreenState extends State<TableScreen> {
                     } else if (table.status == "Occupied") {
                       Get.to(UpdateTransactionScreen(
                           table: table, idTableFB: listTable[index].id));
+                    } else {
+                      CherryToast.error(
+                        title:
+                            const Text("Hiện tại bàn đang lỗi không thể Order"),
+                      ).show(context);
                     }
                   },
                   onLongPress: () {
@@ -161,8 +167,10 @@ class _TableScreenState extends State<TableScreen> {
                                   const SizedBox(width: 4),
                                   Expanded(
                                     child: Text(
-                                      statusTableConvert(table.status.toString()),
-                                     style: GlobalTextStyles.font12w600ColorBlack,
+                                      statusTableConvert(
+                                          table.status.toString()),
+                                      style:
+                                          GlobalTextStyles.font12w600ColorBlack,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),

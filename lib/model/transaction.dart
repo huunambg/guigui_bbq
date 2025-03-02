@@ -7,6 +7,7 @@ class Transaction {
   int? tableId;
   String? paymentMethod;
   String? paymentDate;
+  String? discountCode;
   int? amount;
   int? countPeople; // Thuộc tính countPeople
   int? bufferId; // Thuộc tính bufferId
@@ -18,6 +19,7 @@ class Transaction {
     this.tableId,
     this.paymentMethod,
     this.paymentDate,
+    this.discountCode,
     this.amount,
     this.countPeople,
     this.bufferId, // Khởi tạo bufferId
@@ -29,6 +31,7 @@ class Transaction {
     accountId = json['account_id'];
     tableId = json['table_id'];
     paymentMethod = json['payment_method'];
+    discountCode = json['discount_code'];
     paymentDate = json['payment_date'];
     amount = json['amount'];
     countPeople = json['count_people'];
@@ -42,6 +45,7 @@ class Transaction {
     data['account_id'] = accountId;
     data['table_id'] = tableId;
     data['payment_method'] = paymentMethod;
+    data['discount_code'] = discountCode;
     data['payment_date'] = paymentDate;
     data['amount'] = amount;
     data['count_people'] = countPeople;
@@ -56,6 +60,7 @@ class Transaction {
     data['account_id'] = accountId;
     data['table_id'] = tableId;
     data['payment_method'] = paymentMethod;
+    data['discount_code'] = discountCode;
     data['payment_date'] = paymentDate;
     data['amount'] = amount;
     data['count_people'] = countPeople;
@@ -69,6 +74,7 @@ class Transaction {
     int? accountId,
     int? tableId,
     String? paymentMethod,
+    String? discountCode,
     String? paymentDate,
     int? amount,
     int? countPeople,
@@ -80,6 +86,7 @@ class Transaction {
       accountId: accountId ?? this.accountId,
       tableId: tableId ?? this.tableId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      discountCode: discountCode ?? this.discountCode,
       paymentDate: paymentDate ?? this.paymentDate,
       amount: amount ?? this.amount,
       countPeople: countPeople ?? this.countPeople,

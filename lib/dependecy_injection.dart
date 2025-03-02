@@ -1,4 +1,5 @@
 import 'package:qlnh/screen/admin/buffer_admin/controller/buffer_controller.dart';
+import 'package:qlnh/screen/admin/discount/controller/discount_controller.dart';
 import 'package:qlnh/screen/admin/personnel/controller/personnel_controller.dart';
 import 'package:qlnh/screen/together/splash/controller/splash_controller.dart';
 import 'package:qlnh/screen/user/login/controller/login_controller.dart';
@@ -31,4 +32,6 @@ Future<void> init() async {
   Get.lazyPut(() => bufferController, fenix: true);
   final userController = UserController();
   Get.lazyPut(() => userController, fenix: true);
+  final discountController = DiscountController();
+  Get.lazyPut(() => discountController, fenix: true);
 }
