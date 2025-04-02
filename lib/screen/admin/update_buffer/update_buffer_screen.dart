@@ -18,6 +18,7 @@ class _UpdateBufferScreenState extends State<UpdateBufferScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _price2Controller = TextEditingController();
   final bufferCtl = Get.find<BufferController>();
 
   Future<void> createBuffer() async {
@@ -25,7 +26,8 @@ class _UpdateBufferScreenState extends State<UpdateBufferScreen> {
       Buffer buffer = Buffer(
           bufferId: widget.buffer.bufferId,
           bufferType: _itemNameController.text,
-          pricePerPerson: int.parse(_priceController.text));
+          pricePerPerson: int.parse(_priceController.text),
+          pricePerPerson2: int.parse(_price2Controller.text));
       try {
         await bufferCtl.updateBuffer(buffer);
         Get.back();
@@ -50,6 +52,7 @@ class _UpdateBufferScreenState extends State<UpdateBufferScreen> {
     super.initState();
     _itemNameController.text = widget.buffer.bufferType!;
     _priceController.text = widget.buffer.pricePerPerson.toString();
+    _price2Controller.text = widget.buffer.pricePerPerson2.toString();
   }
 
   @override
@@ -66,7 +69,6 @@ class _UpdateBufferScreenState extends State<UpdateBufferScreen> {
         title: const Text('Cập nhật Buffer',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -100,12 +102,37 @@ class _UpdateBufferScreenState extends State<UpdateBufferScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 Text(
-                  "Giá 1 người",
+                  "Giá người lớn",
                   style: GlobalTextStyles.font14w600ColorBlack,
                 ),
                 const Gap(4),
                 TextFormField(
                   controller: _priceController,
+                  decoration: InputDecoration(
+                    hintText: 'Nhập giá',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(Icons.person_2_outlined),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng giá';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Giá phải là số';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  "Giá trẻ em",
+                  style: GlobalTextStyles.font14w600ColorBlack,
+                ),
+                const Gap(4),
+                TextFormField(
+                  controller: _price2Controller,
                   decoration: InputDecoration(
                     hintText: 'Nhập giá',
                     border: OutlineInputBorder(

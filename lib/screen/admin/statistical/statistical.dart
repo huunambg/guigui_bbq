@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/transaction.dart';
 import 'package:qlnh/screen/user/transaction/controller/transaction_controller.dart';
@@ -21,7 +22,7 @@ class _TransactionStatisticsScreenState
   int totalTransactions = 0;
   int totalAmount = 0;
   final transactionCtl = Get.find<TransactionController>();
-
+  DateTime? selectedDay;
   @override
   void initState() {
     super.initState();
@@ -52,10 +53,42 @@ class _TransactionStatisticsScreenState
     });
   }
 
+  void filterTransactions2() {
+    setState(() {
+      filteredTransactions = transactions.where((transaction) {
+        final paymentDate = DateTime.parse(transaction.paymentDate!)
+            .add(const Duration(hours: 7));
+
+        if (DateFormat('dd MMM yyyy').format(paymentDate) ==
+            DateFormat('dd MMM yyyy').format(selectedDay!)) {
+          return true;
+        }
+        return false;
+      }).toList();
+      calculateStatistics();
+    });
+  }
+
   void calculateStatistics() {
     totalTransactions = filteredTransactions.length;
     totalAmount = filteredTransactions.fold(
         0, (sum, transaction) => sum + (transaction.amount ?? 0));
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      print(picked);
+      setState(() {
+        selectedDay = picked;
+        filterTransactions2();
+      });
+    }
   }
 
   @override
@@ -64,6 +97,13 @@ class _TransactionStatisticsScreenState
       appBar: AppBar(
         title: const Text("Thống kê"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            onPressed: () => _selectDate(context),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Column(
         children: [

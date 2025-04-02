@@ -35,6 +35,7 @@ class UpdateTransactionScreen extends StatefulWidget {
 class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
   List<String> items = [];
   String? selectedValue;
+  String? selectedValue2;
   Buffer? selectedBuffer;
   final updateTransactionCtl = Get.find<UpdateTransactionController>();
   final addTransactionCtl = Get.find<AddTransactionController>();
@@ -58,6 +59,7 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
             updateTransactionCtl.transaction.value.discountCode!;
 
         selectedValue = updateTransactionCtl.selectNumberPeople.value;
+        selectedValue2 = updateTransactionCtl.selectNumberPeople2.value;
         selectedBuffer = updateTransactionCtl.selectBuffer.value;
         selectPayment =
             updateTransactionCtl.transaction.value.paymentMethod == "Chưa"
@@ -158,11 +160,17 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Số lượng người",
+              "Số lượng người lớn",
               style: GlobalTextStyles.font16w600ColorBlack,
             ),
             const Gap(8.0),
-            dropdownButtonSelectNumberPeole(),
+            dropdownButtonSelectNumberPeole(), const Gap(8.0),
+            Text(
+              "Số lượng trẻ em",
+              style: GlobalTextStyles.font16w600ColorBlack,
+            ),
+            const Gap(8.0),
+            dropdownButtonSelectNumberPeole2(),
             const Gap(8.0),
             Text(
               "Loại Buffer",
@@ -232,9 +240,9 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
                                             updateTransactionCtl
                                                 .listOrderDetail[index]
                                                 .copyWith(
-                                                    quantity: value,
-                                                    totalPrice:
-                                                        value * item.price!);
+                                          quantity: value,
+                                          totalPrice: value * item.price!,
+                                        );
                                         updateTransactionCtl.updateTotalMoney();
                                       },
                                     ),
@@ -375,6 +383,7 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
             const Gap(24.0),
             MaterialButton(
               onPressed: () {
+                print(selectedValue2);
                 final transaction = Transaction(
                     tableId: widget.table.tableId,
                     bufferId: selectedBuffer!.bufferId,
@@ -384,6 +393,8 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
                         : selectPayment == 1
                             ? "TM"
                             : "CK",
+                    countPeople2: int.parse(
+                        updateTransactionCtl.selectNumberPeople2.value),
                     countPeople: int.parse(
                         updateTransactionCtl.selectNumberPeople.value),
                     accountId: 1,
@@ -455,6 +466,78 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
           updateTransactionCtl.updateSelectNumberPeople(value!);
           setState(() {
             selectedValue = value;
+          });
+        },
+        buttonStyleData: ButtonStyleData(
+          height: 60,
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 14, right: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(),
+          ),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: 200,
+          width: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        menuItemStyleData: const MenuItemStyleData(
+          height: 40,
+          padding: EdgeInsets.only(left: 14, right: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget dropdownButtonSelectNumberPeole2() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<String>(
+        isExpanded: true,
+        hint: const Row(
+          children: [
+            Icon(
+              Icons.list,
+              size: 16,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Expanded(
+              child: Text(
+                'Chọn số lượng',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        items: items
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    "$item người",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ))
+            .toList(),
+        value: selectedValue2,
+        onChanged: (value) {
+          updateTransactionCtl.updateSelectNumberPeople2(value!);
+          setState(() {
+            selectedValue2 = value;
           });
         },
         buttonStyleData: ButtonStyleData(

@@ -10,6 +10,7 @@ class Transaction {
   String? discountCode;
   int? amount;
   int? countPeople; // Thuộc tính countPeople
+  int? countPeople2;
   int? bufferId; // Thuộc tính bufferId
 
   Transaction({
@@ -22,6 +23,7 @@ class Transaction {
     this.discountCode,
     this.amount,
     this.countPeople,
+    this.countPeople2,
     this.bufferId, // Khởi tạo bufferId
   });
 
@@ -35,6 +37,7 @@ class Transaction {
     paymentDate = json['payment_date'];
     amount = json['amount'];
     countPeople = json['count_people'];
+    countPeople2 = json['count_people2'];
     bufferId = json['buffer_id']; // Gán giá trị từ JSON
   }
 
@@ -49,6 +52,7 @@ class Transaction {
     data['payment_date'] = paymentDate;
     data['amount'] = amount;
     data['count_people'] = countPeople;
+    data['count_people2'] = countPeople2;
     data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
   }
@@ -64,6 +68,7 @@ class Transaction {
     data['payment_date'] = paymentDate;
     data['amount'] = amount;
     data['count_people'] = countPeople;
+    data['count_people2'] = countPeople2;
     data['buffer_id'] = bufferId; // Thêm vào JSON
     return data;
   }
@@ -78,6 +83,7 @@ class Transaction {
     String? paymentDate,
     int? amount,
     int? countPeople,
+    int? countPeople2,
     int? bufferId, // Bổ sung vào copyWith
   }) {
     return Transaction(
@@ -90,6 +96,7 @@ class Transaction {
       paymentDate: paymentDate ?? this.paymentDate,
       amount: amount ?? this.amount,
       countPeople: countPeople ?? this.countPeople,
+      countPeople2: countPeople ?? this.countPeople2,
       bufferId: bufferId ??
           this.bufferId, // Sử dụng giá trị hiện tại nếu không thay đổi
     );

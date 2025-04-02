@@ -36,6 +36,7 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   List<String> items = [];
   String? selectedValue;
+  String? selectedValue2;
   Buffer? selectedBuffer;
   final addTransactionCtl = Get.find<AddTransactionController>();
   final menuCtl = Get.find<MenusController>();
@@ -93,7 +94,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                               child: Stack(
                                 children: [
                                   Image.network(
-                                      "https://img.vietqr.io/image/vietinbank-107872416964-print.jpg?amount=${addTransactionCtl.totalMoney}&addInfo=Thanh toan tien ban ${widget.table.tableName}&accountName=Nong Huu Nam"),
+                                      "https://img.vietqr.io/image/vietinbank-102872184190-print.jpg?amount=${addTransactionCtl.totalMoney}&addInfo=Thanh toan tien ban ${widget.table.tableName}&accountName=Nguyen Thi Luu"),
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: IconButton(
@@ -123,11 +124,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Số lượng người",
+              "Số lượng người lớn",
               style: GlobalTextStyles.font16w600ColorBlack,
             ),
             const Gap(8.0),
             dropdownButtonSelectNumberPeole(),
+            Text(
+              "Số lượng trẻ em",
+              style: GlobalTextStyles.font16w600ColorBlack,
+            ),
+            const Gap(8.0),
+            dropdownButtonSelectNumberPeole2(),
             const Gap(8.0),
             Text(
               "Loại Buffer",
@@ -319,6 +326,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             : "CK",
                     countPeople:
                         int.parse(addTransactionCtl.selectNumberPeople.value),
+                    countPeople2:
+                        int.parse(addTransactionCtl.selectNumberPeople2.value),
                     accountId: loginCtl.userData.value.userId,
                     orderId: 1,
                     paymentDate: DateTime.now().toString(),
@@ -366,7 +375,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
             Expanded(
               child: Text(
-                'Chọn số lượng',
+                'Chọn số lượng người lớn',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -396,6 +405,78 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           addTransactionCtl.updateSelectNumberPeople(value!);
           setState(() {
             selectedValue = value;
+          });
+        },
+        buttonStyleData: ButtonStyleData(
+          height: 60,
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 14, right: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(),
+          ),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: 200,
+          width: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        menuItemStyleData: const MenuItemStyleData(
+          height: 40,
+          padding: EdgeInsets.only(left: 14, right: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget dropdownButtonSelectNumberPeole2() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<String>(
+        isExpanded: true,
+        hint: const Row(
+          children: [
+            Icon(
+              Icons.list,
+              size: 16,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Expanded(
+              child: Text(
+                'Chọn số lượng trẻ em',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        items: items
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    "$item người",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ))
+            .toList(),
+        value: selectedValue2,
+        onChanged: (value) {
+          addTransactionCtl.updateSelectNumberPeople2(value!);
+          setState(() {
+            selectedValue2 = value;
           });
         },
         buttonStyleData: ButtonStyleData(
@@ -453,7 +534,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             .map((Buffer item) => DropdownMenuItem<Buffer>(
                   value: item,
                   child: Text(
-                    "${item.bufferType} ${(item.pricePerPerson! / 1000).toInt()}K",
+                    "${item.bufferType} NL ${(item.pricePerPerson! / 1000).toInt()}K ,TE ${(item.pricePerPerson2! / 1000).toInt()}K",
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,

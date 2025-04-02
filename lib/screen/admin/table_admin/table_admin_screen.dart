@@ -23,7 +23,7 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
   final _streamTable =
       FirebaseFirestore.instance.collection("Table").snapshots();
   final _docsTable = FirebaseFirestore.instance.collection("Table");
-
+  final phoneCtl = TextEditingController();
   int countAvailableTable(List data) {
     int cnt = 0;
     if (data.isNotEmpty) {
@@ -82,7 +82,10 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
               padding: const EdgeInsets.all(16.0),
               itemCount: listTable.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10),
+                  childAspectRatio: 0.8,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10),
               itemBuilder: (context, index) {
                 final table = Tablee.fromJson(listTable[index].data());
 
@@ -94,6 +97,10 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                     } else if (table.status == "Occupied") {
                       Get.to(UpdateTransactionScreen(
                           table: table, idTableFB: listTable[index].id));
+                    } else if (table.status == "Booked") {
+                      CherryToast.warning(
+                        title: const Text("Hiện tại bàn đã có khách order"),
+                      ).show(context);
                     } else {
                       CherryToast.error(
                         title:
@@ -110,11 +117,73 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
+                          actionsPadding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 20),
+                          insetPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                           title: const Text("Chọn chức năng"),
                           content: const Text("Mời bạn chọn chức năng bàn"),
                           actions: [
                             Row(
                               children: [
+                                TextButton(
+                                    onPressed: () async {
+                                      Get.back();
+                                      if (table.status == "Booked") {
+                                        await _docsTable
+                                            .doc(listTable[index].id)
+                                            .update({"status": "Available"});
+                                        return;
+                                      }
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                                actionsPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0,
+                                                        vertical: 20),
+                                                insetPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 16),
+                                                title: const Text("Đặt bàn"),
+                                                content: TextField(
+                                                  controller: phoneCtl,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Nhập số điện thoại",
+                                                      border:
+                                                          OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20))),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () async {
+                                                        Get.back();
+                                                        await _docsTable
+                                                            .doc(
+                                                                listTable[index]
+                                                                    .id)
+                                                            .update({
+                                                          "status": "Booked",
+                                                          "phone": phoneCtl.text
+                                                        });
+                                                      },
+                                                      child: const Text(
+                                                          "Đặt bàn")),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                      child: const Text(
+                                                          "Quay lại"))
+                                                ]);
+                                          });
+                                    },
+                                    child: const Text("Đặt bàn")),
                                 TextButton(
                                     onPressed: () {
                                       Get.back();
@@ -141,6 +210,7 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                                                 .doc(listTable[index].id)
                                                 .update({"status": "Reserved"});
                                           }
+                                          phoneCtl.clear();
                                         },
                                         panaraDialogType:
                                             PanaraDialogType.warning,
@@ -213,7 +283,9 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                                   ? Colors.green[300]
                                   : table.status == "Occupied"
                                       ? Colors.orange[300]
-                                      : Colors.red[300],
+                                      : table.status == "Booked"
+                                          ? Colors.pinkAccent
+                                          : Colors.red[300],
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10))),
@@ -240,7 +312,7 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.only(top: 8, left: 8, right: 8),
+                              const EdgeInsets.only(top: 4, left: 4, right: 4),
                           child: Column(
                             children: [
                               Row(
@@ -272,7 +344,26 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
                               ),
                             ],
                           ),
-                        )
+                        ),
+                        if (table.status == "Booked")
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, left: 8, right: 8),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.phone, size: 16),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    listTable[index].data()['phone'].toString(),
+                                    style:
+                                        GlobalTextStyles.font12w600ColorBlack,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -294,6 +385,8 @@ class _TableAdminScreenState extends State<TableAdminScreen> {
       return "Trống";
     } else if (status == "Occupied") {
       return "Đã có khách";
+    } else if (status == "Booked") {
+      return "Khách đặt";
     } else {
       return "Đang lỗi";
     }

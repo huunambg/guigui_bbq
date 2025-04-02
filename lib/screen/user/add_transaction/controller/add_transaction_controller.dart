@@ -14,6 +14,7 @@ class AddTransactionController extends GetxController {
   RxList<OrderDetail> listOrderDetail = <OrderDetail>[].obs;
   RxBool isShowQR = false.obs;
   RxString selectNumberPeople = "0".obs;
+  RxString selectNumberPeople2 = "0".obs;
   Rx<Buffer> selectBuffer = Buffer().obs;
   RxInt totalMoney = 0.obs;
 
@@ -27,6 +28,11 @@ class AddTransactionController extends GetxController {
 
   void updateSelectNumberPeople(String value) {
     selectNumberPeople.value = value;
+    updateTotalMoney();
+  }
+
+  void updateSelectNumberPeople2(String value) {
+    selectNumberPeople2.value = value;
     updateTotalMoney();
   }
 
@@ -49,6 +55,10 @@ class AddTransactionController extends GetxController {
     totalMoney.value = temp +
         (int.parse(selectNumberPeople.value) *
             selectBuffer.value.pricePerPerson!);
+
+    totalMoney.value += temp +
+        (int.parse(selectNumberPeople2.value) *
+            selectBuffer.value.pricePerPerson2!);
   }
 
   void getListBuffer() async {

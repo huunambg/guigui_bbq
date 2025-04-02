@@ -12,6 +12,7 @@ class UpdateTransactionController extends GetxController {
   RxList<OrderDetail> listOrderDetail = <OrderDetail>[].obs;
   RxBool isShowQR = false.obs;
   RxString selectNumberPeople = "0".obs;
+  RxString selectNumberPeople2 = "0".obs;
   Rx<Buffer> selectBuffer = Buffer().obs;
   RxInt totalMoney = 0.obs;
   Rx<Transaction> transaction = Transaction().obs;
@@ -31,12 +32,14 @@ class UpdateTransactionController extends GetxController {
         await ApiService().getOrderDetailByOrder(transaction.value.orderId!);
     totalOldMenu.value = listOrderDetail.length;
     selectNumberPeople.value = transaction.value.countPeople.toString();
+    selectNumberPeople2.value = transaction.value.countPeople2.toString();
     updateTotalMoney();
   }
 
   void clearData() {
     listOrderDetail.clear();
     selectNumberPeople.value = "0";
+    selectNumberPeople2.value = "0";
     selectBuffer.value = Buffer();
     totalMoney.value = 0;
     isShowQR.value = false;
@@ -48,6 +51,11 @@ class UpdateTransactionController extends GetxController {
     updateTotalMoney();
   }
 
+  void updateSelectNumberPeople2(String value) {
+    selectNumberPeople2.value = value;
+    updateTotalMoney();
+  }
+
   void updateSelectBuffer(Buffer buffer) {
     selectBuffer.value = buffer;
     updateTotalMoney();
@@ -55,6 +63,7 @@ class UpdateTransactionController extends GetxController {
 
   void updateTotalMoney() {
     if (selectNumberPeople.value == "0" ||
+        selectNumberPeople2.value == "0" ||
         selectBuffer.value.bufferId == null) {
       totalMoney.value = 0;
       return;
@@ -67,6 +76,10 @@ class UpdateTransactionController extends GetxController {
     totalMoney.value = temp +
         (int.parse(selectNumberPeople.value) *
             selectBuffer.value.pricePerPerson!);
+
+    totalMoney.value += temp +
+        (int.parse(selectNumberPeople2.value) *
+            selectBuffer.value.pricePerPerson2!);
   }
 
   void updateQuantity(Transaction transaction) {}
@@ -106,7 +119,8 @@ class UpdateTransactionController extends GetxController {
       await ApiService().updateTransaction(transaction.copyWith(
           transactionId: this.transaction.value.transactionId,
           bufferId: selectBuffer.value.bufferId,
-          countPeople: int.parse(selectNumberPeople.value)));
+          countPeople: int.parse(selectNumberPeople.value),
+          countPeople2: int.parse(selectNumberPeople2.value)));
       if (isFinish.value) {
         fs.FirebaseFirestore.instance
             .collection("Table")
@@ -127,6 +141,4 @@ class UpdateTransactionController extends GetxController {
       title: const Text("Cập nhật hóa đơn thành công"),
     ).show(context);
   }
-
-
 }

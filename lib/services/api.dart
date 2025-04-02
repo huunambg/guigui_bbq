@@ -11,7 +11,7 @@ import 'package:qlnh/model/transaction.dart';
 import 'package:qlnh/model/user.dart';
 import '/model/acount.dart';
 
-const String ipv4 ="172.19.201.168";
+const String ipv4 ="192.168.43.2";
 
 class ApiService {
   final String baseUrl;
@@ -82,7 +82,7 @@ class ApiService {
       }
     } catch (e) {
       print("getAllDiscount: $e");
-      throw e.toString();
+      throw ("error");
     }
   }
 
