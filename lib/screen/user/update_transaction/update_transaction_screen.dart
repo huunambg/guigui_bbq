@@ -595,7 +595,7 @@ class _UpdateTransactionScreenState extends State<UpdateTransactionScreen> {
             .map((Buffer item) => DropdownMenuItem<Buffer>(
                   value: item,
                   child: Text(
-                    "${item.bufferType} ${(item.pricePerPerson! / 1000).toInt()}K",
+                    "${item.bufferType} NL ${(item.pricePerPerson! / 1000).toInt()}K ,TE ${item.pricePerPerson2! ~/ 1000}K",
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,

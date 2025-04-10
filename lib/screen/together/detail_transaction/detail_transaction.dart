@@ -113,7 +113,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 const Icon(Icons.person_2_outlined, color: Colors.black),
                 const SizedBox(width: 8),
                 const Text(
-                  "Số người: ",
+                  "Số người lớn: ",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
@@ -123,6 +123,27 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 ),
                 Text(
                   "${widget.transaction.countPeople ?? "Không xác định"}",
+                  style: GlobalTextStyles.font16w600ColorBlack,
+                )
+              ],
+            ),
+            // Số người
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Icon(Icons.person_2_outlined, color: Colors.black),
+                const SizedBox(width: 8),
+                const Text(
+                  "Số trẻ em: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color:
+                        Colors.black87, // Changed to a darker shade for clarity
+                  ),
+                ),
+                Text(
+                  "${widget.transaction.countPeople2 ?? "Không xác định"}",
                   style: GlobalTextStyles.font16w600ColorBlack,
                 )
               ],
@@ -167,7 +188,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                   ),
                 ),
                 Text(
-                  "${tienviet(getBuffer(widget.transaction.bufferId!).pricePerPerson!)}/Người",
+                  "NL ${tienviet(getBuffer(widget.transaction.bufferId!).pricePerPerson!)} - TE ${tienviet(getBuffer(widget.transaction.bufferId!).pricePerPerson2!)}",
                   style: GlobalTextStyles.font16w600ColorBlack,
                 )
               ],
@@ -197,7 +218,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 const Icon(Icons.payment, color: Colors.black),
                 const SizedBox(width: 8),
                 const Text(
-                  "Phương thức thanh toán: ",
+                  "PT thanh toán: ",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,

@@ -1,12 +1,15 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:qlnh/config/global_text_style.dart';
 import 'package:qlnh/model/table.dart';
+import 'package:qlnh/screen/admin/add_table/add_table_screen.dart';
 import 'package:qlnh/screen/user/update_transaction/update_transaction_screen.dart';
 import 'package:qlnh/screen/user/add_transaction/add_transaction_screen.dart';
-import 'package:qlnh/screen/user/add_transaction/controller/add_transaction_controller.dart';
+import 'package:qlnh/services/api.dart';
 
 class TableScreen extends StatefulWidget {
   const TableScreen({super.key});
@@ -19,7 +22,7 @@ class _TableScreenState extends State<TableScreen> {
   final _streamTable =
       FirebaseFirestore.instance.collection("Table").snapshots();
   final _docsTable = FirebaseFirestore.instance.collection("Table");
-
+  final phoneCtl = TextEditingController();
   int countAvailableTable(List data) {
     int cnt = 0;
     if (data.isNotEmpty) {
@@ -30,13 +33,6 @@ class _TableScreenState extends State<TableScreen> {
       }
     }
     return cnt;
-  }
-
-  final addTransactionCtl = Get.find<AddTransactionController>();
-  @override
-  void initState() {
-    super.initState();
-    addTransactionCtl.getListBuffer();
   }
 
   @override
@@ -63,6 +59,18 @@ class _TableScreenState extends State<TableScreen> {
             ),
           ],
         ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Get.to(AddTableScreen());
+            },
+            child: const Icon(
+              Icons.add,
+              size: 28,
+            ),
+          ),
+          const Gap(12.0)
+        ],
       ),
       body: StreamBuilder(
         stream: _streamTable,
@@ -73,7 +81,10 @@ class _TableScreenState extends State<TableScreen> {
               padding: const EdgeInsets.all(16.0),
               itemCount: listTable.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10),
+                  childAspectRatio: 0.8,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10),
               itemBuilder: (context, index) {
                 final table = Tablee.fromJson(listTable[index].data());
 
@@ -85,6 +96,10 @@ class _TableScreenState extends State<TableScreen> {
                     } else if (table.status == "Occupied") {
                       Get.to(UpdateTransactionScreen(
                           table: table, idTableFB: listTable[index].id));
+                    } else if (table.status == "Booked") {
+                      CherryToast.warning(
+                        title: const Text("Hiện tại bàn đã có khách order"),
+                      ).show(context);
                     } else {
                       CherryToast.error(
                         title:
@@ -93,9 +108,126 @@ class _TableScreenState extends State<TableScreen> {
                     }
                   },
                   onLongPress: () {
-                    _docsTable.doc(listTable[index].id).update({
-                      'status': "Available",
-                    });
+                    // _docsTable.doc(listTable[index].id).update({
+                    //   'status': "Available",
+                    // });
+
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          actionsPadding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 20),
+                          insetPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          title: const Text("Chọn chức năng"),
+                          content: const Text("Mời bạn chọn chức năng bàn"),
+                          actions: [
+                            Row(
+                              children: [
+                                TextButton(
+                                    onPressed: () async {
+                                      Get.back();
+                                      if (table.status == "Booked") {
+                                        await _docsTable
+                                            .doc(listTable[index].id)
+                                            .update({"status": "Available"});
+                                        return;
+                                      }
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                                actionsPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0,
+                                                        vertical: 20),
+                                                insetPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 16),
+                                                title: const Text("Đặt bàn"),
+                                                content: TextField(
+                                                  controller: phoneCtl,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Nhập số điện thoại",
+                                                      border:
+                                                          OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20))),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () async {
+                                                        Get.back();
+                                                        await _docsTable
+                                                            .doc(
+                                                                listTable[index]
+                                                                    .id)
+                                                            .update({
+                                                          "status": "Booked",
+                                                          "phone": phoneCtl.text
+                                                        });
+                                                      },
+                                                      child: const Text(
+                                                          "Đặt bàn")),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                      child: const Text(
+                                                          "Quay lại"))
+                                                ]);
+                                          });
+                                    },
+                                    child: const Text("Đặt bàn")),
+                                TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                      PanaraConfirmDialog.show(
+                                        context,
+                                        title:
+                                            "Cập nhật bàn ${table.tableName} tạm hỏng",
+                                        message:
+                                            "Bạn có cập nhật trạng thái cho bàn trên",
+                                        confirmButtonText: "Cập nhật",
+                                        cancelButtonText: "Quay lại",
+                                        onTapCancel: () {
+                                          Get.back();
+                                        },
+                                        onTapConfirm: () async {
+                                          Get.back();
+                                          if (table.status == "Reserved") {
+                                            await _docsTable
+                                                .doc(listTable[index].id)
+                                                .update(
+                                                    {"status": "Available"});
+                                          } else {
+                                            await _docsTable
+                                                .doc(listTable[index].id)
+                                                .update({"status": "Reserved"});
+                                          }
+                                          phoneCtl.clear();
+                                        },
+                                        panaraDialogType:
+                                            PanaraDialogType.warning,
+                                        barrierDismissible: false,
+                                      );
+                                    },
+                                    child: const Text("Tạm hỏng")),
+                                TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: const Text("Quay lại")),
+                              ],
+                            )
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -119,7 +251,9 @@ class _TableScreenState extends State<TableScreen> {
                                   ? Colors.green[300]
                                   : table.status == "Occupied"
                                       ? Colors.orange[300]
-                                      : Colors.red[300],
+                                      : table.status == "Booked"
+                                          ? Colors.pinkAccent
+                                          : Colors.red[300],
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10))),
@@ -146,7 +280,7 @@ class _TableScreenState extends State<TableScreen> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.only(top: 8, left: 8, right: 8),
+                              const EdgeInsets.only(top: 4, left: 4, right: 4),
                           child: Column(
                             children: [
                               Row(
@@ -178,7 +312,26 @@ class _TableScreenState extends State<TableScreen> {
                               ),
                             ],
                           ),
-                        )
+                        ),
+                        if (table.status == "Booked")
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, left: 8, right: 8),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.phone, size: 16),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    listTable[index].data()['phone'].toString(),
+                                    style:
+                                        GlobalTextStyles.font12w600ColorBlack,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -200,6 +353,8 @@ class _TableScreenState extends State<TableScreen> {
       return "Trống";
     } else if (status == "Occupied") {
       return "Đã có khách";
+    } else if (status == "Booked") {
+      return "Khách đặt";
     } else {
       return "Đang lỗi";
     }
